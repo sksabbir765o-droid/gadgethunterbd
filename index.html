@@ -1356,14 +1356,39 @@ function selectPayment(type) {
   document.getElementById('bkashInfo').classList.toggle('show', type === 'bkash');
 }
 
-// 📲 TELEGRAM নোটিফিকেশন — সরাসরি ব্রাউজার থেকে Telegram-এ যায় না।
-// বট টোকেন/চ্যাট আইডি সার্ভার-সাইডে (/api/notify-order.js) Vercel Environment
-// Variable হিসেবে রাখা হয়, তাই ব্রাউজারের সোর্স কোডে কোনো secret দেখা যায় না।
+// 📲 TELEGRAM BOT নোটিফিকেশন কনফিগ
+const TELEGRAM_BOT_TOKEN = '8631159100:AAFGXjjv_0MuA09Wt0rTw-Hc_P0SpFasTT8';
+const TELEGRAM_CHAT_ID = '7983826570';
+
 function sendTelegramNotification(order) {
-  fetch('/api/notify-order', {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+  const itemList = order.items.map(c => `▫️ ${c.name} × ${c.qty}`).join('\n');
+  const payMethod = order.payment === 'bkash' ? 'bKash/Nagad' : 'ক্যাশ অন ডেলিভারি';
+  const delivArea = order.delivery === 'dhaka' ? 'ঢাকার ভিতরে' : 'ঢাকার বাইরে';
+  const text =
+`🛒 *নতুন অর্ডার এসেছে!*
+🆔 অর্ডার আইডি: \`${order.id}\`
+
+👤 নাম: ${order.name}
+📞 ফোন: ${order.phone}
+🏠 ঠিকানা: ${order.address}
+${order.note ? '📝 নোট: ' + order.note + '\n' : ''}
+📦 পণ্য:
+${itemList}
+
+🚚 ডেলিভারি: ${delivArea} (৳${order.deliveryCharge})
+💳 পেমেন্ট: ${payMethod}${order.txnId ? '\n🔖 TxnID: `' + order.txnId + '`' : ''}
+💰 সর্বমোট: ৳${order.total.toLocaleString()}
+🕒 সময়: ${order.time}`;
+
+  fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(order)
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: text,
+      parse_mode: 'Markdown'
+    })
   }).catch(err => console.error('Telegram নোটিফিকেশন পাঠাতে ব্যর্থ:', err));
 }
 
@@ -1541,8 +1566,15 @@ function saveSiteSettings(partial) {
     .catch(e => console.error('সেটিংস সেভ করতে ব্যর্থ:', e));
 }
 function saveProductsToDB() {
-  db.collection('siteData').doc('products').set({ list: PRODUCTS })
-    .catch(e => console.error('প্রোডাক্ট সেভ করতে ব্যর্থ:', e));
+  // Firestore নেস্টেড অ্যারে (array এর ভিতরে array) সাপোর্ট করে না,
+  // তাই প্রতিটি প্রোডাক্টকে অবজেক্টে (map) রূপান্তর করে সেভ করা হচ্ছে।
+  const listForDB = PRODUCTS.map(p => ({
+    name: p[0], price: p[1], oldPrice: p[2], img: p[3],
+    features: p[4], discount: p[5], cat: p[6]
+  }));
+  db.collection('siteData').doc('products').set({ list: listForDB })
+    .then(() => console.log('প্রোডাক্ট সফলভাবে সেভ হয়েছে'))
+    .catch(e => { console.error('প্রোডাক্ট সেভ করতে ব্যর্থ:', e); showToast('❌ সেভ করতে সমস্যা হয়েছে!'); });
 }
 function loadSiteData() {
   db.collection('siteData').doc('settings').get().then(doc => {
@@ -1590,7 +1622,12 @@ function loadSiteData() {
     if (!doc.exists) return;
     const list = doc.data().list;
     if (Array.isArray(list) && list.length) {
-      PRODUCTS.splice(0, PRODUCTS.length, ...list);
+      // পুরনো ডেটা (নেস্টেড অ্যারে আকারে) এবং নতুন ডেটা (অবজেক্ট আকারে) দুটোই সাপোর্ট করার জন্য
+      const arr = list.map(item => Array.isArray(item)
+        ? item
+        : [item.name, item.price, item.oldPrice, item.img, item.features, item.discount, item.cat]
+      );
+      PRODUCTS.splice(0, PRODUCTS.length, ...arr);
       currentProducts = [...PRODUCTS];
       renderProducts(currentProducts);
     }
