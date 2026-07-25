@@ -1356,39 +1356,14 @@ function selectPayment(type) {
   document.getElementById('bkashInfo').classList.toggle('show', type === 'bkash');
 }
 
-// 📲 TELEGRAM BOT নোটিফিকেশন কনফিগ
-const TELEGRAM_BOT_TOKEN = '8631159100:AAFGXjjv_0MuA09Wt0rTw-Hc_P0SpFasTT8';
-const TELEGRAM_CHAT_ID = '7983826570';
-
+// 📲 TELEGRAM নোটিফিকেশন — সরাসরি ব্রাউজার থেকে Telegram-এ যায় না।
+// বট টোকেন/চ্যাট আইডি সার্ভার-সাইডে (/api/notify-order.js) Vercel Environment
+// Variable হিসেবে রাখা হয়, তাই ব্রাউজারের সোর্স কোডে কোনো secret দেখা যায় না।
 function sendTelegramNotification(order) {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
-  const itemList = order.items.map(c => `▫️ ${c.name} × ${c.qty}`).join('\n');
-  const payMethod = order.payment === 'bkash' ? 'bKash/Nagad' : 'ক্যাশ অন ডেলিভারি';
-  const delivArea = order.delivery === 'dhaka' ? 'ঢাকার ভিতরে' : 'ঢাকার বাইরে';
-  const text =
-`🛒 *নতুন অর্ডার এসেছে!*
-🆔 অর্ডার আইডি: \`${order.id}\`
-
-👤 নাম: ${order.name}
-📞 ফোন: ${order.phone}
-🏠 ঠিকানা: ${order.address}
-${order.note ? '📝 নোট: ' + order.note + '\n' : ''}
-📦 পণ্য:
-${itemList}
-
-🚚 ডেলিভারি: ${delivArea} (৳${order.deliveryCharge})
-💳 পেমেন্ট: ${payMethod}${order.txnId ? '\n🔖 TxnID: `' + order.txnId + '`' : ''}
-💰 সর্বমোট: ৳${order.total.toLocaleString()}
-🕒 সময়: ${order.time}`;
-
-  fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+  fetch('/api/notify-order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: TELEGRAM_CHAT_ID,
-      text: text,
-      parse_mode: 'Markdown'
-    })
+    body: JSON.stringify(order)
   }).catch(err => console.error('Telegram নোটিফিকেশন পাঠাতে ব্যর্থ:', err));
 }
 
@@ -2051,4 +2026,4 @@ requestNotificationPermission();
 loadSiteData();
 </script>
 </body>
-</html>
+  </html>
