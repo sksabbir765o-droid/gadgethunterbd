@@ -244,6 +244,7 @@
     background: var(--light-gray); color: var(--dark);
     border: 1.5px solid var(--border); border-radius: 7px;
     font-size: 13px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
   }
   .cart-mini-btn:hover { background: var(--primary-light); border-color: var(--primary); }
 
@@ -1186,7 +1187,9 @@ function renderProducts(list) {
           <span class="price-old">${p[2]}</span>
         </div>
         <div class="card-btn-row">
-          <button class="cart-mini-btn" onclick="event.stopPropagation();addToCart(${PRODUCTS.indexOf(p)})" title="কার্টে যোগ করুন">🛒</button>
+          <button class="cart-mini-btn" onclick="event.stopPropagation();addToCart(${PRODUCTS.indexOf(p)})" title="কার্টে যোগ করুন">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          </button>
           <button class="add-to-cart" onclick="event.stopPropagation();buyNow(${PRODUCTS.indexOf(p)})">⚡ অর্ডার করুন</button>
         </div>
       </div>
@@ -1582,7 +1585,7 @@ function loadSiteData() {
     const s = doc.data();
     if (s.shopName) {
       document.querySelectorAll('.logo, .footer-logo').forEach(l => {
-        l.innerHTML = '🎯 ' + s.shopName.replace(/([A-Za-z]+)(\s*BD\s*$)/,'$1<span>$2</span>');
+        l.innerHTML = s.shopName.replace(/([A-Za-z]+)(\s*BD\s*$)/,'$1<span>$2</span>');
       });
       document.title = s.shopName;
     }
@@ -1643,7 +1646,7 @@ function applyTextChanges() {
   const footer = document.getElementById('txtFooter').value.trim();
   if (shopName) {
     const logos = document.querySelectorAll('.logo, .footer-logo');
-    logos.forEach(l => { l.innerHTML = '🎯 ' + shopName.replace(/([A-Za-z]+)(\s*BD\s*$)/,'$1<span>$2</span>'); });
+    logos.forEach(l => { l.innerHTML = shopName.replace(/([A-Za-z]+)(\s*BD\s*$)/,'$1<span>$2</span>'); });
     document.title = shopName;
   }
   const heroH1 = document.querySelector('.hero h1');
@@ -2060,7 +2063,3 @@ auth.onAuthStateChanged(user => {
 // INIT
 renderProducts(PRODUCTS);
 requestNotificationPermission();
-loadSiteData();
-</script>
-</body>
-  </html>
