@@ -1,0 +1,3197 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gadget Hunter BD</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #FF6B00;
+    --primary-dark: #E05A00;
+    --primary-light: #FFF3E8;
+    --dark: #111827;
+    --gray: #6B7280;
+    --light-gray: #F3F4F6;
+    --white: #FFFFFF;
+    --success: #10B981;
+    --danger: #EF4444;
+    --border: #E5E7EB;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #F9FAFB; color: var(--dark); overflow-x: hidden; width: 100%; }
+
+  /* HEADER */
+  header {
+    background: var(--dark);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .header-row1 {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 10px;
+  }
+  .header-row2 {
+    display: flex; gap: 0; width: 100%;
+  }
+  .logo { font-size: 18px; font-weight: 900; color: var(--white); text-decoration: none; letter-spacing: -0.5px; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+  .hamburger-btn { background: none; border: none; color: var(--white); font-size: 22px; cursor: pointer; padding: 2px 6px 2px 0; flex-shrink: 0; line-height: 1; }
+  @media (max-width: 380px) {
+    .logo { font-size: 15px; }
+    .cart-btn, .admin-btn, .customer-auth-btn { padding: 7px 8px; font-size: 11px; }
+    .customer-auth-btn { max-width: 60px; }
+    .hamburger-btn { font-size: 19px; }
+  }
+  .logo span { color: var(--primary); }
+
+  /* ================= SIDE MENU (হ্যামবার্গার ড্রয়ার) ================= */
+  .side-menu-overlay {
+    display: none; position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,0.5);
+  }
+  .side-menu-overlay.open { display: block; }
+  .side-menu {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 82%; max-width: 320px;
+    background: white; z-index: 401; overflow-y: auto;
+    transform: translateX(-100%); transition: transform 0.25s ease;
+  }
+  .side-menu-overlay.open .side-menu { transform: translateX(0); }
+  .side-menu-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px; border-bottom: 1px solid var(--border);
+  }
+  .side-menu-header .sm-logo { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 16.5px; color: var(--dark); }
+  .side-menu-header .sm-logo img { height: 32px; width: auto; border-radius: 6px; }
+  .side-menu-header .sm-logo span { color: var(--primary); }
+  .side-menu-header button { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--gray); line-height: 1; }
+  .side-menu-list { padding: 6px 0; }
+  .side-menu-list button.sm-link {
+    display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+    padding: 14px 18px; font-size: 15.5px; font-weight: 700; color: var(--dark);
+    background: none; border: none; cursor: pointer;
+  }
+  .side-menu-list button.sm-link:hover { background: var(--light-gray); }
+  .side-menu-list .sm-icon { font-size: 18px; width: 22px; text-align: center; flex-shrink: 0; }
+  .side-menu-divider { border-top: 1px solid var(--border); margin: 8px 0; }
+  .side-menu-cat-title { padding: 10px 18px 4px; font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.3px; }
+  .side-menu-list button.sm-cat-link { font-weight: 600; font-size: 15px; padding: 12px 18px; }
+  .search-bar {
+    flex: 1;
+    display: flex; gap: 0;
+  }
+  .search-bar input {
+    flex: 1; padding: 9px 12px;
+    border: none; border-radius: 8px 0 0 8px;
+    font-size: 14px; outline: none;
+  }
+  .search-bar button {
+    background: var(--primary); border: none;
+    padding: 9px 14px; border-radius: 0 8px 8px 0;
+    color: white; font-size: 16px; cursor: pointer;
+  }
+  .header-actions { display: flex; gap: 6px; align-items: center; }
+  .cart-btn {
+    background: var(--primary); color: white;
+    border: none; border-radius: 8px;
+    padding: 8px 10px; cursor: pointer;
+    font-size: 15px; position: relative;
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+  .cart-count {
+    background: white; color: var(--primary);
+    border-radius: 50%; width: 20px; height: 20px;
+    font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .admin-btn {
+    background: #374151; color: white;
+    border: none; border-radius: 8px;
+    padding: 8px 10px; cursor: pointer; font-size: 12px; font-weight: 600;
+    flex-shrink: 0; white-space: nowrap;
+  }
+
+  /* CUSTOMER AUTH */
+  .customer-auth-wrap { position: relative; flex-shrink: 1; min-width: 0; }
+  .customer-auth-btn {
+    background: var(--primary-light); color: var(--primary-dark);
+    border: none; border-radius: 8px;
+    padding: 8px 10px; cursor: pointer; font-size: 12px; font-weight: 700;
+    max-width: 78px; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; display: block;
+  }
+  .customer-dropdown {
+    display: none; position: absolute; top: calc(100% + 6px); right: 0;
+    background: white; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    min-width: 170px; z-index: 150; overflow: hidden; padding: 6px;
+  }
+  .customer-dropdown.open { display: block; }
+  .customer-dropdown-name {
+    padding: 8px 10px; font-size: 12px; font-weight: 700;
+    color: var(--gray); border-bottom: 1px solid var(--border); margin-bottom: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .customer-dropdown button {
+    display: block; width: 100%; text-align: left;
+    background: none; border: none; border-radius: 6px;
+    padding: 9px 10px; font-size: 13px; font-weight: 600; color: var(--dark);
+    cursor: pointer;
+  }
+  .customer-dropdown button:hover { background: var(--light-gray); }
+
+  .auth-tabs { display: flex; gap: 0; margin-bottom: 16px; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--border); }
+  .auth-tab-btn {
+    flex: 1; padding: 10px; background: white; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 700; color: var(--gray);
+  }
+  .auth-tab-btn.active { background: var(--primary); color: white; }
+  .auth-error { color: var(--danger); font-size: 13px; margin-top: 4px; min-height: 18px; }
+  .auth-submit-btn {
+    width: 100%; padding: 12px; background: var(--primary); color: white;
+    border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .my-order-item {
+    border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 10px; margin-bottom: 10px; font-size: 13px;
+  }
+  .my-order-item .mo-id { font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+  .my-order-item .mo-status {
+    display: inline-block; padding: 2px 8px; border-radius: 12px;
+    font-size: 11px; font-weight: 700; background: var(--primary-light); color: var(--primary-dark);
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(rgba(17,24,39,0.55), rgba(17,24,39,0.55)), url('https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/031327dc-5e5e-4613-b21b-7f4b1794f9f9.png');
+    background-size: cover;
+    background-position: center;
+    padding: 40px 16px;
+    text-align: center; color: white;
+  }
+  .hero h1 { font-size: clamp(24px, 5vw, 42px); font-weight: 900; line-height: 1.1; margin-bottom: 10px; }
+  .hero h1 span { color: var(--primary); }
+  .hero p { font-size: 15px; opacity: 0.8; margin-bottom: 20px; }
+  .ticker-wrap {
+    width: 100%; overflow: hidden;
+    background: rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding: 10px 0; margin-top: 18px;
+  }
+  .ticker-track {
+    display: flex;
+    animation: ticker 20s linear infinite;
+    width: max-content;
+  }
+  .ticker-track:hover { animation-play-state: paused; }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .ticker-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 24px; font-size: 14px; font-weight: 700;
+    color: white; white-space: nowrap;
+  }
+  .ticker-item .t-icon { font-size: 18px; }
+  .ticker-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--primary); flex-shrink: 0; margin: 0 4px;
+  }
+
+  /* FILTER BAR */
+  .filter-bar {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 12px 16px; overflow-x: auto;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .filter-label { font-size: 12px; font-weight: 700; color: var(--gray); white-space: nowrap; }
+  .cat-btn {
+    background: var(--light-gray); border: 1.5px solid transparent;
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    white-space: nowrap; transition: all 0.2s;
+    color: var(--dark);
+  }
+  .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .cat-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+
+  /* PRODUCTS */
+  .section { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+  .section-title {
+    font-size: 20px; font-weight: 800; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::before {
+    content: ''; width: 4px; height: 22px;
+    background: var(--primary); border-radius: 2px; display: block;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .product-card {
+    background: white; border-radius: 12px;
+    overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer; position: relative;
+  }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .discount-badge {
+    position: absolute; top: 8px; left: 8px;
+    background: var(--danger); color: white;
+    border-radius: 6px; padding: 3px 7px;
+    font-size: 11px; font-weight: 700; z-index: 1;
+  }
+  .product-img {
+    width: 100%; aspect-ratio: 1;
+    object-fit: cover; display: block;
+    background: var(--light-gray);
+  }
+  .product-info { padding: 10px; }
+  .product-name {
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 6px; line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .product-prices { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .price-current { font-size: 15px; font-weight: 800; color: var(--primary); }
+  .price-old { font-size: 11px; color: var(--gray); text-decoration: line-through; }
+  .card-btn-row { display: flex; gap: 6px; margin-top: 8px; }
+  .add-to-cart {
+    flex: 1;
+    background: var(--primary); color: white;
+    border: none; border-radius: 7px;
+    padding: 5px; font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .add-to-cart:hover { background: var(--primary-dark); }
+  .cart-mini-btn {
+    flex-shrink: 0; width: 30px;
+    background: var(--light-gray); color: var(--dark);
+    border: 1.5px solid var(--border); border-radius: 7px;
+    font-size: 13px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cart-mini-btn:hover { background: var(--primary-light); border-color: var(--primary); }
+
+  /* HERO SLIDER */
+  .hero-slider { position: relative; overflow: hidden; }
+  .hero-slide {
+    display: none;
+    background-size: cover; background-position: center;
+    padding: 40px 16px; text-align: center; color: white;
+  }
+  .hero-slide.active { display: block; }
+  .hero-slide h1 { font-size: clamp(24px, 5vw, 42px); font-weight: 900; line-height: 1.1; margin-bottom: 10px; }
+  .hero-slide h1 span { color: var(--primary); }
+  .hero-slide p { font-size: 15px; opacity: 0.85; margin-bottom: 0; }
+  .hero-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 5; }
+  .hero-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; transition: background 0.2s, width 0.2s; }
+  .hero-dot.active { background: var(--primary); width: 18px; border-radius: 4px; }
+  .hero-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(17,24,39,0.35); color: white; border: none;
+    width: 30px; height: 30px; border-radius: 50%; font-size: 15px;
+    cursor: pointer; z-index: 5; display: flex; align-items: center; justify-content: center;
+  }
+  .hero-arrow:hover { background: rgba(17,24,39,0.6); }
+  .hero-arrow.prev { left: 10px; }
+  .hero-arrow.next { right: 10px; }
+
+  /* SHOP BY CATEGORY (icon circles) */
+  .cat-icons-wrap {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 14px 16px 6px;
+  }
+  .cat-icons-title { font-size: 13px; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
+  .cat-icons-row { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px; }
+  .cat-icon-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; width: 62px; }
+  .cat-icon-circle {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: var(--primary-light); color: var(--primary-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; border: 2px solid transparent; transition: all 0.2s;
+  }
+  .cat-icon-item.active .cat-icon-circle,
+  .cat-icon-item:hover .cat-icon-circle { border-color: var(--primary); background: var(--primary); color: white; }
+  .cat-icon-label { font-size: 11px; font-weight: 700; text-align: center; color: var(--dark); line-height: 1.2; }
+
+  /* TOP SELLING SECTION */
+  .top-selling-wrap { background: white; padding: 20px 0; }
+  .top-selling-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .top-selling-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; }
+  .ts-card {
+    flex: 0 0 150px; background: var(--light-gray); border-radius: 12px;
+    overflow: hidden; cursor: pointer; position: relative; transition: transform 0.2s;
+  }
+  .ts-card:hover { transform: translateY(-3px); }
+  .ts-badges { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; z-index: 1; }
+  .ts-badge { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 5px; color: white; }
+  .ts-badge.best { background: var(--dark); }
+  .ts-badge.hot { background: var(--danger); }
+  .ts-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .ts-card-info { padding: 8px; background: white; }
+  .ts-card-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ts-card-price { font-size: 13px; font-weight: 800; color: var(--primary); }
+  .ts-card-oldprice { font-size: 10px; color: var(--gray); text-decoration: line-through; margin-left: 4px; }
+
+  /* FOOTER ENHANCEMENTS */
+  .footer-newsletter { max-width: 340px; margin: 16px auto; display: flex; gap: 0; }
+  .footer-newsletter input {
+    flex: 1; padding: 10px 12px; border: none; border-radius: 8px 0 0 8px;
+    font-size: 13px; outline: none;
+  }
+  .footer-newsletter button {
+    background: var(--primary); color: white; border: none;
+    padding: 10px 16px; border-radius: 0 8px 8px 0; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .footer-socials { display: flex; justify-content: center; gap: 10px; margin: 14px 0; }
+  .footer-social-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; text-decoration: none; transition: background 0.2s;
+  }
+  .footer-social-btn:hover { background: var(--primary); }
+  .footer-payment-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+  .footer-payment-pill {
+    background: rgba(255,255,255,0.1); color: white;
+    font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 6px;
+  }
+  .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 16px auto; max-width: 400px; }
+
+  /* CART SIDEBAR */
+  .cart-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 200;
+  }
+  .cart-overlay.open { display: block; }
+  .cart-sidebar {
+    position: fixed; top: 0; right: -400px;
+    width: 100%; max-width: 380px; height: 100%;
+    background: white; z-index: 201;
+    transition: right 0.3s ease;
+    display: flex; flex-direction: column;
+  }
+  .cart-sidebar.open { right: 0; }
+  .cart-header {
+    background: var(--dark); color: white;
+    padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cart-header h3 { font-size: 18px; font-weight: 800; }
+  .close-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+  .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
+  .cart-empty { text-align: center; padding: 40px; color: var(--gray); font-size: 15px; }
+  .cart-item {
+    display: flex; gap: 12px; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .cart-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .cart-item-price { font-size: 13px; color: var(--primary); font-weight: 700; }
+  .qty-control { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .qty-btn {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    font-size: 14px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; font-weight: 700;
+  }
+  .qty-num { font-size: 13px; font-weight: 700; min-width: 20px; text-align: center; }
+  .remove-item { background: none; border: none; color: var(--danger); font-size: 18px; cursor: pointer; }
+  .cart-footer { padding: 16px; border-top: 1px solid var(--border); }
+  .cart-total { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+  .checkout-btn {
+    width: 100%; padding: 14px;
+    background: var(--success); color: white;
+    border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 800; cursor: pointer;
+    margin-bottom: 8px;
+  }
+
+  /* ORDER MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 300;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 16px;
+    width: 100%; max-width: 440px;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-header {
+    background: var(--primary); color: white;
+    padding: 16px 20px; border-radius: 16px 16px 0 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-header h3 { font-size: 18px; font-weight: 800; }
+  .modal-body { padding: 20px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13.5px; font-weight: 700; margin-bottom: 7px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 13px 14px;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    font-size: 14.5px; outline: none; font-family: inherit;
+    transition: border-color 0.2s; background: white; color: var(--dark);
+  }
+  .form-group select {
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 14px center;
+    padding-right: 36px; cursor: pointer;
+  }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: #9CA3AF; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+  .payment-options { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .pay-opt {
+    flex: 1; min-width: 120px; padding: 10px;
+    border: 2px solid var(--border); border-radius: 8px;
+    text-align: center; cursor: pointer; font-size: 13px; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .pay-opt.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+  .pay-opt .pay-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+  .bkash-info {
+    background: #FFF0F5; border: 1px solid #FFB3D1;
+    border-radius: 8px; padding: 12px; margin-top: 8px;
+    font-size: 13px; display: none;
+  }
+  .bkash-info.show { display: block; }
+  .bkash-number { font-size: 18px; font-weight: 800; color: #E2136E; }
+  .txnid-guide {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px; padding: 8px;
+    background: white; border: 1.5px dashed #E2136E;
+    border-radius: 8px; cursor: pointer;
+  }
+  .txnid-guide img {
+    width: 48px; height: 48px; object-fit: cover;
+    border-radius: 6px; flex-shrink: 0; border: 1px solid #FFB3D1;
+    cursor: pointer;
+  }
+  .txnid-guide span { font-size: 12.5px; font-weight: 700; color: #E2136E; line-height: 1.3; }
+
+  /* ================= PAYMENT GATEWAY OVERLAY (bKash/Nagad ধাপে ধাপে ফ্লো) ================= */
+  .pgw-overlay {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: #EEF2FB; overflow-y: auto;
+  }
+  .pgw-overlay.open { display: block; }
+  .pgw-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; background: white; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 2;
+  }
+  .pgw-topbar button { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray); line-height: 1; }
+  .pgw-topbar span { font-size: 12.5px; font-weight: 700; color: var(--gray); }
+  .pgw-body { max-width: 420px; margin: 0 auto; padding: 26px 16px 40px; text-align: center; }
+
+  .pgw-spinner {
+    width: 76px; height: 76px; margin: 10px auto 22px;
+    border-radius: 50%; border: 5px solid #F0E6FB;
+    border-top-color: #8C3FE0; animation: pgw-spin 0.9s linear infinite;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+  }
+  @keyframes pgw-spin { to { transform: rotate(360deg); } }
+  .pgw-processing h4 { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--dark); }
+  .pgw-processing p { color: var(--gray); font-size: 14px; }
+
+  .pgw-brand-logo {
+    width: 88px; height: 88px; border-radius: 50%; border: 2px solid var(--border);
+    margin: 6px auto 14px; display: flex; align-items: center; justify-content: center;
+    background: white; font-weight: 900; font-size: 14px; color: var(--primary);
+  }
+  .pgw-site-name { font-size: 19px; font-weight: 800; color: #3A4A63; margin-bottom: 16px; }
+  .pgw-choose-title { background: #1E40C4; color: white; font-weight: 700; padding: 12px; border-radius: 8px; margin-bottom: 14px; font-size: 14px; }
+  .pgw-method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pgw-method-card { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 8px; cursor: pointer; text-align: center; transition: border-color .2s; }
+  .pgw-method-card:hover { border-color: var(--primary); }
+  .pgw-method-card .pgw-mlogo { font-weight: 900; font-size: 17px; margin-bottom: 8px; }
+  .pgw-method-card .pgw-mnote { font-size: 11px; color: var(--gray); line-height: 1.4; padding-top: 8px; border-top: 1px solid var(--border); }
+  .pgw-pay-footer {
+    position: sticky; bottom: 0; background: #DCE6FB; padding: 16px;
+    text-align: center; font-weight: 800; font-size: 17px; color: #1E40C4;
+    margin: 20px -16px -40px;
+  }
+
+  .pgw-site-box { background: white; border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 14px; text-align: left; }
+  .pgw-site-mini-logo { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; }
+  .pgw-amount-box { background: white; border-radius: 10px; padding: 16px; font-size: 22px; font-weight: 800; color: #3A4A63; text-align: left; margin-bottom: 14px; }
+  .pgw-instr-box { background: white; border-radius: 10px; padding: 6px 16px; text-align: left; }
+  .pgw-instr-item { display: flex; gap: 10px; padding: 13px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; line-height: 1.6; }
+  .pgw-instr-item:last-child { border-bottom: none; }
+  .pgw-instr-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #1E40C4; margin-top: 7px; flex-shrink: 0; }
+  .pgw-copy-btn { background: #1E40C4; color: white; border: none; border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 700; cursor: pointer; margin-left: 6px; white-space: nowrap; }
+  .pgw-txn-input {
+    width: 100%; margin-top: 6px; padding: 13px; border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 14.5px; outline: none; font-family: inherit;
+  }
+  .pgw-txn-input:focus { border-color: var(--primary); }
+  .pgw-verify-btn {
+    width: 100%; margin-top: 16px; padding: 15px; background: #1E40C4; color: white;
+    border: none; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer;
+  }
+
+  .submit-order {
+    width: 100%; padding: 14px;
+    background: var(--primary); color: white;
+    border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 800; cursor: pointer;
+    margin-top: 8px;
+  }
+  .order-summary-box {
+    background: var(--light-gray); border-radius: 8px;
+    padding: 12px; margin-bottom: 14px; font-size: 13px;
+  }
+  .order-summary-box .sum-item {
+    display: flex; justify-content: space-between;
+    padding: 3px 0;
+  }
+  .order-summary-box .sum-total {
+    border-top: 1px solid var(--border); margin-top: 6px;
+    padding-top: 6px; font-weight: 800; font-size: 15px;
+  }
+
+  /* SUCCESS */
+  .success-modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 400;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .success-modal.open { display: flex; }
+  .success-box {
+    background: white; border-radius: 16px;
+    padding: 32px 24px; text-align: center; max-width: 340px;
+  }
+  .success-icon { font-size: 56px; margin-bottom: 12px; }
+  .success-box h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .success-box p { font-size: 14px; color: var(--gray); margin-bottom: 16px; }
+  .success-close {
+    background: var(--primary); color: white;
+    border: none; border-radius: 8px;
+    padding: 10px 24px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+
+  /* PRODUCT DETAIL MODAL */
+  .detail-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 250;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .detail-overlay.open { display: flex; }
+  .detail-modal {
+    background: white; border-radius: 16px;
+    width: 100%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .detail-modal img { width: 100%; height: 240px; object-fit: cover; border-radius: 16px 16px 0 0; }
+  .detail-body { padding: 20px; }
+  .detail-name { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .detail-prices { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .detail-price-current { font-size: 24px; font-weight: 900; color: var(--primary); }
+  .detail-price-old { font-size: 15px; color: var(--gray); text-decoration: line-through; }
+  .detail-badge { background: var(--danger); color: white; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; }
+  .detail-features { margin-bottom: 16px; }
+  .detail-features h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .feature-item { font-size: 13px; padding: 4px 0; color: var(--gray); }
+  .detail-btn {
+    flex: 1; padding: 14px;
+    background: var(--primary); color: white;
+    border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+  }
+  .detail-btn-row { display: flex; gap: 8px; }
+  .detail-buy-btn {
+    flex: 1; padding: 14px;
+    background: var(--dark); color: white;
+    border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+  }
+  .detail-close-btn {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(0,0,0,0.4); color: white;
+    border: none; border-radius: 50%;
+    width: 32px; height: 32px; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .detail-modal-wrap { position: relative; }
+
+  /* ADMIN */
+  .admin-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 500;
+  }
+  .admin-overlay.open { display: block; }
+  .admin-panel {
+    position: fixed; inset: 0;
+    background: #F0F2F5; z-index: 501;
+    overflow-y: auto; display: none;
+  }
+  .admin-panel.open { display: block; }
+  .admin-header {
+    background: var(--dark); color: white;
+    padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .admin-header h2 { font-size: 18px; font-weight: 800; }
+  .admin-tabs {
+    display: flex; gap: 4px; padding: 16px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: white; border: none; border-radius: 8px;
+    padding: 8px 16px; font-size: 13px; font-weight: 700;
+    cursor: pointer; white-space: nowrap; color: var(--gray);
+  }
+  .tab-btn.active { background: var(--primary); color: white; }
+  .admin-content { padding: 0 16px 20px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card {
+    background: white; border-radius: 12px;
+    padding: 16px; text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 900; color: var(--primary); }
+  .stat-label { font-size: 12px; color: var(--gray); font-weight: 600; margin-top: 2px; }
+  .orders-list { display: flex; flex-direction: column; gap: 10px; }
+  .order-card {
+    background: white; border-radius: 12px;
+    padding: 14px;
+  }
+  .order-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .order-id { font-size: 12px; color: var(--gray); font-weight: 600; }
+  .order-status {
+    border-radius: 20px; padding: 3px 10px;
+    font-size: 11px; font-weight: 700;
+  }
+  .status-pending { background: #FEF3C7; color: #D97706; }
+  .status-confirmed { background: #D1FAE5; color: #065F46; }
+  .order-customer { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .order-phone { font-size: 13px; color: var(--gray); }
+  .order-amount { font-size: 16px; font-weight: 800; color: var(--primary); margin-top: 6px; }
+  .order-items-list { font-size: 12px; color: var(--gray); margin-top: 4px; }
+  .confirm-order-btn {
+    background: var(--success); color: white;
+    border: none; border-radius: 7px;
+    padding: 7px 14px; font-size: 12px; font-weight: 700;
+    cursor: pointer; margin-top: 8px;
+  }
+  .delete-order-btn {
+    background: var(--danger); color: white;
+    border: none; border-radius: 7px;
+    padding: 7px 14px; font-size: 12px; font-weight: 700;
+    cursor: pointer; margin-top: 8px; margin-left: 6px;
+  }
+  .no-orders { text-align: center; padding: 40px; color: var(--gray); }
+
+  /* ADMIN LOGIN */
+  .admin-login {
+    max-width: 320px; margin: 80px auto; background: white;
+    border-radius: 16px; padding: 32px 24px; text-align: center;
+  }
+  .admin-login h2 { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+  .admin-login input {
+    width: 100%; padding: 10px 12px; margin-bottom: 10px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14px; outline: none;
+  }
+  .admin-login button {
+    width: 100%; padding: 12px;
+    background: var(--primary); color: white;
+    border: none; border-radius: 8px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .login-error { color: var(--danger); font-size: 13px; margin-top: 8px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: white;
+    padding: 24px 16px; text-align: center; margin-top: 32px;
+  }
+  footer .footer-logo { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+  footer .footer-logo span { color: var(--primary); }
+  footer .footer-tagline { font-size: 13px; opacity: 0.65; max-width: 380px; margin: 0 auto; line-height: 1.5; }
+  footer p { font-size: 13px; opacity: 0.6; }
+  footer .contact-info { margin: 12px 0; font-size: 14px; }
+  footer .contact-info a { color: var(--primary); text-decoration: none; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--dark); color: white;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 14px; font-weight: 600; z-index: 1000;
+    transition: transform 0.3s; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .wa-btn {
+    position: fixed; bottom: 76px; right: 16px;
+    background: #25D366; color: white;
+    border: none; border-radius: 50%;
+    width: 56px; height: 56px;
+    font-size: 28px; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(37,211,102,0.5);
+    z-index: 150; display: flex; align-items: center; justify-content: center;
+    animation: pulse 2s infinite;
+    text-decoration: none;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 4px 16px rgba(37,211,102,0.5); }
+    50% { box-shadow: 0 4px 28px rgba(37,211,102,0.9); }
+  }
+  .msg-btn {
+    position: fixed; bottom: 144px; right: 16px;
+    background: linear-gradient(135deg, #00C6FF, #0078FF);
+    color: white; border: none; border-radius: 50%;
+    width: 56px; height: 56px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,120,255,0.5);
+    z-index: 150; display: flex; align-items: center; justify-content: center;
+    animation: pulse-msg 2s infinite;
+    text-decoration: none;
+  }
+  @keyframes pulse-msg {
+    0%,100% { box-shadow: 0 4px 16px rgba(0,120,255,0.5); }
+    50% { box-shadow: 0 4px 28px rgba(0,120,255,0.9); }
+  }
+  .admin-product-form {
+    background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px;
+  }
+  .admin-product-form h4 { font-size: 15px; font-weight: 800; margin-bottom: 12px; color: var(--primary); }
+  .admin-product-form input, .admin-product-form select, .admin-product-form textarea {
+    width: 100%; padding: 9px 12px; margin-bottom: 8px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 13px; outline: none; font-family: inherit;
+  }
+  .admin-save-btn {
+    background: var(--primary); color: white; border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%;
+  }
+  .admin-product-list { display: flex; flex-direction: column; gap: 8px; }
+  .admin-product-item {
+    background: white; border-radius: 10px; padding: 12px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .admin-product-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+  .admin-product-item-info { flex: 1; min-width: 0; }
+  .admin-product-item-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-product-item-price { font-size: 12px; color: var(--primary); font-weight: 700; }
+  .edit-product-btn {
+    background: #3B82F6; color: white; border: none; border-radius: 6px;
+    padding: 5px 10px; font-size: 11px; font-weight: 700; cursor: pointer; margin-right: 4px;
+  }
+  .del-product-btn {
+    background: var(--danger); color: white; border: none; border-radius: 6px;
+    padding: 5px 10px; font-size: 11px; font-weight: 700; cursor: pointer;
+  }
+  .edit-modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 600;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .edit-modal.open { display: flex; }
+  .edit-modal-box {
+    background: white; border-radius: 16px; padding: 20px;
+    width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;
+  }
+  .edit-modal-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--primary); }
+  .edit-modal-box label { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; }
+  .edit-modal-box input, .edit-modal-box textarea {
+    width: 100%; padding: 9px 12px; margin-bottom: 10px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 13px; outline: none; font-family: inherit;
+  }
+  .edit-modal-box input:focus { border-color: var(--primary); }
+  .edit-save-btn {
+    width: 100%; padding: 12px; background: var(--primary); color: white;
+    border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-bottom: 8px;
+  }
+  .edit-cancel-btn {
+    width: 100%; padding: 10px; background: var(--light-gray); color: var(--dark);
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+
+  /* ================= MY ACCOUNT পেজ (Daraz স্টাইল) ================= */
+  .account-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff; padding: 20px 18px; display: flex; align-items: center; justify-content: space-between;
+    border-radius: 12px 12px 0 0;
+  }
+  .account-header h3 { margin: 0; font-size: 16px; }
+  .account-header .acc-login-btn {
+    background: #fff; color: var(--primary); border: none; padding: 8px 14px;
+    border-radius: 20px; font-weight: 700; font-size: 12.5px; cursor: pointer;
+  }
+  .account-list-row {
+    display: flex; align-items: center; gap: 12px; padding: 15px 18px;
+    border-bottom: 1px solid var(--light-gray); cursor: pointer; font-size: 14.5px; font-weight: 600; color: var(--dark);
+  }
+  .account-list-row:hover { background: var(--light-gray); }
+  .account-list-row .acc-icon { font-size: 19px; width: 22px; text-align: center; }
+  .account-list-row.logout-row { color: #DC2626; }
+
+  /* Wishlist heart icon on product card */
+  .wishlist-heart {
+    position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.9); border: none; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; cursor: pointer; z-index: 2; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  .wishlist-heart.active { color: #E11D48; }
+  .wishlist-empty { text-align: center; padding: 40px 20px; color: var(--gray); font-size: 14px; }
+  .wishlist-item-row {
+    display: flex; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--light-gray);
+  }
+  .wishlist-item-row img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+  .wishlist-item-row .wi-name { font-size: 13.5px; font-weight: 700; flex: 1; }
+  .wishlist-item-row .wi-price { font-size: 13px; color: var(--primary); font-weight: 700; }
+  .wishlist-item-row .wi-remove { background: none; border: none; color: var(--gray); font-size: 18px; cursor: pointer; padding: 4px 8px; }
+
+  .policy-section { margin-bottom: 18px; }
+  .policy-section h4 { font-size: 14.5px; color: var(--primary-dark); margin-bottom: 6px; }
+  .policy-section p { font-size: 13.5px; color: var(--gray); line-height: 1.7; }
+
+  .feedback-textarea {
+    width: 100%; min-height: 110px; padding: 10px; border: 1px solid var(--light-gray);
+    border-radius: 8px; font-size: 13.5px; font-family: inherit; resize: vertical; box-sizing: border-box;
+  }
+  .feedback-name-input {
+    width: 100%; padding: 10px; border: 1px solid var(--light-gray); border-radius: 8px;
+    font-size: 13.5px; font-family: inherit; box-sizing: border-box; margin-bottom: 10px;
+  }
+  .feedback-submit-btn {
+    width: 100%; margin-top: 10px; padding: 11px; background: var(--primary); color: #fff;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+
+  /* ================= প্রোডাক্ট রিভিউ সেকশন ================= */
+  .reviews-section { margin-top: 22px; border-top: 1px solid var(--light-gray); padding-top: 16px; }
+  .reviews-section h4 { font-size: 15px; margin-bottom: 10px; }
+  .review-summary { font-size: 13.5px; color: var(--gray); margin-bottom: 14px; }
+  .review-form {
+    background: var(--light-gray); border-radius: 10px; padding: 12px; margin-bottom: 16px;
+  }
+  .review-star-picker { font-size: 24px; letter-spacing: 4px; margin-bottom: 8px; cursor: pointer; }
+  .review-star-picker span { color: #D1D5DB; transition: color 0.15s; }
+  .review-star-picker span.active { color: #FBBF24; }
+  .review-name-input {
+    width: 100%; padding: 9px; border: 1px solid #E5E7EB; border-radius: 8px;
+    font-size: 13.5px; font-family: inherit; box-sizing: border-box; margin-bottom: 8px;
+  }
+  .review-text-input {
+    width: 100%; min-height: 70px; padding: 9px; border: 1px solid #E5E7EB; border-radius: 8px;
+    font-size: 13.5px; font-family: inherit; resize: vertical; box-sizing: border-box;
+  }
+  .review-submit-btn {
+    width: 100%; margin-top: 8px; padding: 10px; background: var(--primary); color: #fff;
+    border: none; border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer;
+  }
+  .review-card { border-bottom: 1px solid var(--light-gray); padding: 12px 0; }
+  .review-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .review-card-name { font-size: 13.5px; font-weight: 700; }
+  .review-card-stars { font-size: 12.5px; color: #FBBF24; }
+  .review-card-text { font-size: 13px; color: var(--dark); line-height: 1.6; margin: 4px 0 8px; }
+  .review-card-actions { display: flex; gap: 16px; font-size: 12.5px; color: var(--gray); }
+  .review-card-actions span { cursor: pointer; user-select: none; }
+  .review-card-actions span.liked { color: var(--primary); font-weight: 700; }
+  .review-comments { margin-top: 8px; padding-left: 10px; border-left: 2px solid var(--light-gray); }
+  .comment-row { font-size: 12.5px; margin-bottom: 6px; }
+  .comment-row b { color: var(--dark); }
+  .comment-row span { color: var(--gray); }
+  .comment-form { display: flex; gap: 6px; margin-top: 6px; }
+  .comment-form input {
+    flex: 1; padding: 7px 9px; border: 1px solid #E5E7EB; border-radius: 6px; font-size: 12.5px; font-family: inherit;
+  }
+  .comment-form button {
+    padding: 7px 12px; background: var(--primary); color: #fff; border: none; border-radius: 6px;
+    font-size: 12.5px; font-weight: 700; cursor: pointer;
+  }
+  .reviews-empty { font-size: 13px; color: var(--gray); text-align: center; padding: 16px 0; }
+</style>
+</head>
+<body>
+
+<!-- SIDE MENU (হ্যামবার্গার ড্রয়ার) -->
+<div class="side-menu-overlay" id="sideMenuOverlay">
+  <div class="side-menu">
+    <div class="side-menu-header">
+      <div class="sm-logo"><img src="https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/Untitled%20design_20260722_003541_0000.png">Gadget<span>Hunter</span> BD</div>
+      <button onclick="closeSideMenu()">✕</button>
+    </div>
+    <div class="side-menu-list">
+      <button class="sm-link" onclick="goHomeFromMenu()"><span class="sm-icon">🏠</span> Home</button>
+      <button class="sm-link" onclick="closeSideMenu();openMyAccount();"><span class="sm-icon">🙋</span> My Account</button>
+      <button class="sm-link" onclick="selectCategoryFromMenu('সব')"><span class="sm-icon">🛍️</span> All Products</button>
+      <button class="sm-link" onclick="openAboutUs()"><span class="sm-icon">ℹ️</span> About Us</button>
+      <button class="sm-link" onclick="openFaqs()"><span class="sm-icon">❓</span> FAQs</button>
+      <button class="sm-link" onclick="closeSideMenu();openTrackOrder();"><span class="sm-icon">📍</span> Track Order</button>
+      <div class="side-menu-divider"></div>
+      <div class="side-menu-cat-title">Category</div>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('অডিও')">🎧 অডিও</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('ইলেকট্রনিক্স')">⚡ ইলেকট্রনিক্স</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('ওয়াচ')">⌚ ওয়াচ</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('গেমিং')">🎮 গেমিং</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('ফ্যাশন')">👓 ফ্যাশন</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('হোম')">🏠 হোম</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('হেলথ')">💪 হেলথ</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('এক্সেসরিজ')">🔌 এক্সেসরিজ</button>
+      <button class="sm-link sm-cat-link" onclick="selectCategoryFromMenu('টুলস')">🔧 টুলস</button>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT US MODAL -->
+<div class="modal-overlay" id="aboutUsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>ℹ️ About Us</h3>
+      <button class="close-btn" onclick="closeAboutUs()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;line-height:1.7;color:var(--dark);">
+        Gadget Hunter BD একটি বিশ্বস্ত অনলাইন গ্যাজেট শপ, যেখানে আপনি পাবেন সাশ্রয়ী মূল্যে অরিজিনাল কোয়ালিটির ইলেকট্রনিক্স ও লাইফস্টাইল প্রোডাক্ট। আমাদের লক্ষ্য প্রতিটি কাস্টমারকে দ্রুত ডেলিভারি ও সেরা কাস্টমার সার্ভিস দেওয়া।
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ MODAL -->
+<div class="modal-overlay" id="faqModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>❓ FAQs</h3>
+      <button class="close-btn" onclick="closeFaqs()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:14px;"><b>ডেলিভারি কতদিনে পাবো?</b><p style="font-size:13.5px;color:var(--gray);margin-top:4px;">সাধারণত ৭২ ঘণ্টার মধ্যে (ঢাকার ভিতরে দ্রুততর, বাইরে কিছুটা বেশি সময় লাগতে পারে)।</p></div>
+      <div style="margin-bottom:14px;"><b>পেমেন্ট পদ্ধতি কী কী?</b><p style="font-size:13.5px;color:var(--gray);margin-top:4px;">bKash, Nagad এবং ক্যাশ অন ডেলিভারি।</p></div>
+      <div style="margin-bottom:14px;"><b>অর্ডার ট্র্যাক করবো কীভাবে?</b><p style="font-size:13.5px;color:var(--gray);margin-top:4px;">মেনু থেকে "Track Order"-এ গিয়ে মোবাইল নাম্বার বা অর্ডার আইডি দিয়ে খুঁজলেই স্ট্যাটাস দেখতে পারবেন।</p></div>
+      <div><b>প্রোডাক্টে সমস্যা হলে কী করবো?</b><p style="font-size:13.5px;color:var(--gray);margin-top:4px;">ডেলিভারির সময় প্রোডাক্ট চেক করে নিন এবং সমস্যা থাকলে সাথে সাথে আমাদের নাম্বারে জানান।</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- MY ACCOUNT MODAL (Daraz স্টাইল হাব) -->
+<div class="modal-overlay" id="myAccountModal">
+  <div class="modal" style="padding:0;overflow:hidden;">
+    <div class="account-header">
+      <h3 id="accHeaderText">Hello, Welcome to Gadget Hunter BD!</h3>
+      <button class="acc-login-btn" id="accLoginBtn" onclick="closeMyAccount();openCustomerAuthModal();">লগইন / সাইনআপ</button>
+      <button class="close-btn" id="accCloseBtn" style="display:none;color:#fff;" onclick="closeMyAccount()">✕</button>
+    </div>
+    <div id="accountList">
+      <div class="account-list-row" onclick="closeMyAccount();openMyOrders();"><span class="acc-icon">📦</span> আমার অর্ডার</div>
+      <div class="account-list-row" onclick="closeMyAccount();openWishlist();"><span class="acc-icon">❤️</span> আমার Wishlist</div>
+      <div class="account-list-row" onclick="closeMyAccount();openTrackOrder();"><span class="acc-icon">📍</span> অর্ডার ট্র্যাক করুন</div>
+      <div class="account-list-row" onclick="closeMyAccount();openPolicies();"><span class="acc-icon">📄</span> Policies</div>
+      <div class="account-list-row" onclick="closeMyAccount();openFeedback();"><span class="acc-icon">💬</span> Feedback</div>
+      <div class="account-list-row" onclick="closeMyAccount();openFaqs();"><span class="acc-icon">❓</span> Help</div>
+      <div class="account-list-row" onclick="openWhatsappChat();"><span class="acc-icon">🟢</span> Chat with us</div>
+      <div class="account-list-row logout-row" id="accLogoutRow" style="display:none;" onclick="closeMyAccount();customerLogout();"><span class="acc-icon">🚪</span> লগআউট</div>
+    </div>
+  </div>
+</div>
+
+<!-- WISHLIST MODAL -->
+<div class="modal-overlay" id="wishlistModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>❤️ আমার Wishlist</h3>
+      <button class="close-btn" onclick="closeWishlist()">✕</button>
+    </div>
+    <div class="modal-body" id="wishlistBody"></div>
+  </div>
+</div>
+
+<!-- POLICIES MODAL -->
+<div class="modal-overlay" id="policiesModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📄 Policies</h3>
+      <button class="close-btn" onclick="closePolicies()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="policy-section">
+        <h4>প্রাইভেসি পলিসি</h4>
+        <p>আপনার নাম, ফোন নাম্বার ও ঠিকানা শুধুমাত্র অর্ডার প্রসেস ও ডেলিভারির জন্য ব্যবহার করা হয়। কোনো তৃতীয় পক্ষের সাথে শেয়ার করা হয় না।</p>
+      </div>
+      <div class="policy-section">
+        <h4>রিটার্ন ও রিফান্ড পলিসি</h4>
+        <p>ডেলিভারির সময় প্রোডাক্ট যাচাই করে নিন। ত্রুটিপূর্ণ বা ভুল প্রোডাক্ট পেলে ডেলিভারির ২৪ ঘণ্টার মধ্যে আমাদের জানালে পরিবর্তন/রিফান্ড করা হবে। ব্যবহৃত প্রোডাক্ট রিটার্নযোগ্য নয়।</p>
+      </div>
+      <div class="policy-section">
+        <h4>ডেলিভারি পলিসি</h4>
+        <p>ঢাকার ভিতরে ২৪-৪৮ ঘণ্টা এবং ঢাকার বাইরে ৪৮-৭২ ঘণ্টার মধ্যে ডেলিভারি দেওয়া হয়।</p>
+      </div>
+      <div class="policy-section">
+        <h4>শর্তাবলী</h4>
+        <p>অর্ডার করার মাধ্যমে আপনি আমাদের উল্লিখিত মূল্য, ডেলিভারি চার্জ ও পেমেন্ট শর্তাবলীতে সম্মত হচ্ছেন বলে ধরে নেওয়া হয়।</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>💬 Feedback</h3>
+      <button class="close-btn" onclick="closeFeedback()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" class="feedback-name-input" id="feedbackName" placeholder="আপনার নাম (ঐচ্ছিক)">
+      <textarea class="feedback-textarea" id="feedbackText" placeholder="আপনার মতামত/অভিযোগ লিখুন..."></textarea>
+      <button class="feedback-submit-btn" onclick="submitFeedback()">পাঠান</button>
+    </div>
+  </div>
+</div>
+
+
+<header>
+  <div class="header-inner">
+    <div class="header-row1">
+      <div style="display:flex;align-items:center;gap:6px;min-width:0;flex-shrink:1;">
+        <button class="hamburger-btn" onclick="openSideMenu()">☰</button>
+        <a class="logo" href="#"><img src="https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/Untitled%20design_20260722_003541_0000.png" style="height:32px;width:auto;vertical-align:middle;border-radius:6px;margin-right:6px;">Gadget<span>Hunter</span> BD</a>
+      </div>
+      <div class="header-actions">
+        <div class="customer-auth-wrap" id="customerAuthWrap">
+          <button class="customer-auth-btn" id="customerAuthBtn" onclick="handleCustomerAuthClick()">👤 লগইন</button>
+          <div class="customer-dropdown" id="customerDropdown">
+            <div class="customer-dropdown-name" id="customerDropdownName"></div>
+            <button onclick="openMyOrders()" id="dropdownMyOrdersBtn">📦 আমার অর্ডার</button>
+            <button onclick="openTrackOrder()">🔍 অর্ডার ট্র্যাক করুন</button>
+            <button onclick="openCustomerAuthModal()" id="dropdownLoginBtn" style="display:none;">🔑 লগইন / সাইনআপ</button>
+            <button onclick="customerLogout()" id="dropdownLogoutBtn">🚪 লগআউট</button>
+          </div>
+        </div>
+        <button class="cart-btn" onclick="openCart()">
+          🛒 <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="admin-btn" onclick="openAdmin()">⚙️ Admin</button>
+      </div>
+    </div>
+    <div class="header-row2">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="প্রোডাক্ট খুঁজুন...">
+        <button onclick="searchProducts()">🔍</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SLIDER -->
+<div class="hero-slider">
+  <button class="hero-arrow prev" onclick="heroSliderMove(-1)">‹</button>
+  <button class="hero-arrow next" onclick="heroSliderMove(1)">›</button>
+
+  <div class="hero-slide hero active" id="heroSlideMain" style="background:linear-gradient(rgba(17,24,39,0.55), rgba(17,24,39,0.55)), url('https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/031327dc-5e5e-4613-b21b-7f4b1794f9f9.png');background-size:cover;background-position:center;">
+    <h1>.<br><span>.</span></h1>
+    <p>.</p>
+    <div class="ticker-wrap">
+      <div class="ticker-track">
+        <!-- first copy -->
+        <div class="ticker-item"><span class="t-icon">🚚</span> হোম ডেলিভারি</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">💳</span> bKash / Nagad পেমেন্ট</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">🔁</span> রিটার্ন পলিসি আছে</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">✅</span> ১০০% অরিজিনাল পণ্য</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">⚡</span> দ্রুত ডেলিভারি</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">🎁</span> সেরা দামে গ্যাজেট</div>
+        <div class="ticker-dot"></div>
+        <!-- duplicate for seamless loop -->
+        <div class="ticker-item"><span class="t-icon">🚚</span> হোম ডেলিভারি</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">💳</span> bKash / Nagad পেমেন্ট</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">🔁</span> রিটার্ন পলিসি আছে</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">✅</span> ১০০% অরিজিনাল পণ্য</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">⚡</span> দ্রুত ডেলিভারি</div>
+        <div class="ticker-dot"></div>
+        <div class="ticker-item"><span class="t-icon">🎁</span> সেরা দামে গ্যাজেট</div>
+        <div class="ticker-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-slide" style="background:linear-gradient(135deg, #FF6B00, #E05A00);">
+    <h1>নতুন প্রোডাক্ট এসেছে<br><span>এখনই দেখুন</span></h1>
+    <p>প্রতি সপ্তাহে নতুন গ্যাজেট যোগ হচ্ছে আমাদের কালেকশনে</p>
+  </div>
+
+  <div class="hero-slide" style="background:linear-gradient(135deg, #111827, #374151);">
+    <h1>সারা বাংলাদেশে ডেলিভারি<br><span>ক্যাশ অন ডেলিভারি সুবিধা</span></h1>
+    <p>bKash, Nagad, Rocket এবং কার্ড পেমেন্ট সাপোর্ট করে</p>
+  </div>
+
+  <div class="hero-dots" id="heroDots">
+    <div class="hero-dot active" onclick="heroSliderGo(0)"></div>
+    <div class="hero-dot" onclick="heroSliderGo(1)"></div>
+    <div class="hero-dot" onclick="heroSliderGo(2)"></div>
+  </div>
+</div>
+
+<!-- SHOP BY CATEGORY (ICON CIRCLES) -->
+<div class="cat-icons-wrap">
+  <div class="cat-icons-title">ক্যাটাগরি অনুযায়ী কিনুন</div>
+  <div class="cat-icons-row">
+    <div class="cat-icon-item active" onclick="filterCategoryFromIcon(this,'সব')">
+      <div class="cat-icon-circle">🛍️</div>
+      <div class="cat-icon-label">সব</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'অডিও')">
+      <div class="cat-icon-circle">🎧</div>
+      <div class="cat-icon-label">অডিও</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'ইলেকট্রনিক্স')">
+      <div class="cat-icon-circle">⚡</div>
+      <div class="cat-icon-label">ইলেকট্রনিক্স</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'ওয়াচ')">
+      <div class="cat-icon-circle">⌚</div>
+      <div class="cat-icon-label">ওয়াচ</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'গেমিং')">
+      <div class="cat-icon-circle">🎮</div>
+      <div class="cat-icon-label">গেমিং</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'ফ্যাশন')">
+      <div class="cat-icon-circle">👓</div>
+      <div class="cat-icon-label">ফ্যাশন</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'হোম')">
+      <div class="cat-icon-circle">🏠</div>
+      <div class="cat-icon-label">হোম</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'হেলথ')">
+      <div class="cat-icon-circle">💪</div>
+      <div class="cat-icon-label">হেলথ</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'এক্সেসরিজ')">
+      <div class="cat-icon-circle">🔌</div>
+      <div class="cat-icon-label">এক্সেসরিজ</div>
+    </div>
+    <div class="cat-icon-item" onclick="filterCategoryFromIcon(this,'টুলস')">
+      <div class="cat-icon-circle">🔧</div>
+      <div class="cat-icon-label">টুলস</div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">ক্যাটাগরি:</span>
+  <button class="cat-btn active" onclick="filterCategory('সব')">সব</button>
+  <button class="cat-btn" onclick="filterCategory('অডিও')">🎧 অডিও</button>
+  <button class="cat-btn" onclick="filterCategory('ইলেকট্রনিক্স')">⚡ ইলেকট্রনিক্স</button>
+  <button class="cat-btn" onclick="filterCategory('ওয়াচ')">⌚ ওয়াচ</button>
+  <button class="cat-btn" onclick="filterCategory('গেমিং')">🎮 গেমিং</button>
+  <button class="cat-btn" onclick="filterCategory('ফ্যাশন')">👓 ফ্যাশন</button>
+  <button class="cat-btn" onclick="filterCategory('হোম')">🏠 হোম</button>
+  <button class="cat-btn" onclick="filterCategory('হেলথ')">💪 হেলথ</button>
+  <button class="cat-btn" onclick="filterCategory('এক্সেসরিজ')">🔌 এক্সেসরিজ</button>
+  <button class="cat-btn" onclick="filterCategory('টুলস')">🔧 টুলস</button>
+</div>
+
+<!-- TOP SELLING -->
+<div class="top-selling-wrap">
+  <div class="top-selling-inner">
+    <div class="section-title">🔥 টপ সেলিং প্রোডাক্ট</div>
+    <div class="top-selling-scroll" id="topSellingScroll"></div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="section">
+  <div class="section-title" id="sectionTitle">সকল প্রোডাক্ট</div>
+  <div class="product-grid" id="productGrid"></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><img src="https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/Untitled%20design_20260722_003541_0000.png" style="height:32px;width:auto;vertical-align:middle;border-radius:6px;margin-right:6px;">Gadget<span>Hunter</span> BD</div>
+  <p class="footer-tagline">আপনার বিশ্বস্ত গ্যাজেট শপ। সেরা মানের প্রোডাক্ট, সাশ্রয়ী দাম, এবং নির্ভরযোগ্য সার্ভিস — সরাসরি আপনার দোরগোড়ায়।</p>
+
+  <div class="footer-newsletter">
+    <input type="text" id="newsletterEmail" placeholder="ইমেইল / মোবাইল নাম্বার">
+    <button onclick="subscribeNewsletter()">সাবস্ক্রাইব</button>
+  </div>
+
+  <div class="contact-info">
+    📞 <a href="tel:+8801818452637">+880 1818-452637</a> &nbsp;|&nbsp;
+    💬 bKash/Nagad: <span class="footer-bkash-number">01796716499</span>
+  </div>
+
+  <div class="footer-socials">
+    <a class="footer-social-btn" href="#" target="_blank" title="Facebook">📘</a>
+    <a class="footer-social-btn" href="#" target="_blank" title="Instagram">📷</a>
+    <a class="footer-social-btn" href="https://wa.me/8801818452637" target="_blank" title="WhatsApp">💬</a>
+    <a class="footer-social-btn" href="#" target="_blank" title="TikTok">🎵</a>
+  </div>
+
+  <div class="footer-payment-row">
+    <span class="footer-payment-pill">bKash</span>
+    <span class="footer-payment-pill">Nagad</span>
+    <span class="footer-payment-pill">Rocket</span>
+    <span class="footer-payment-pill">ক্যাশ অন ডেলিভারি</span>
+  </div>
+
+  <hr class="footer-divider">
+  <p>© 2025 Gadget Hunter BD — সকল স্বত্ব সংরক্ষিত</p>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>🛒 কার্ট</h3>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total" id="cartTotal"></div>
+    <button class="checkout-btn" onclick="openCheckout()">✅ অর্ডার করুন</button>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-modal" id="detailModal">
+    <div class="detail-modal-wrap">
+      <button class="detail-close-btn" onclick="closeDetailModal()">✕</button>
+      <img id="detailImg" src="" alt="">
+      <div class="detail-body">
+        <div class="detail-name" id="detailName"></div>
+        <div class="detail-prices">
+          <div class="detail-price-current" id="detailPrice"></div>
+          <div class="detail-price-old" id="detailOldPrice"></div>
+          <div class="detail-badge" id="detailDiscount"></div>
+        </div>
+        <div class="detail-features">
+          <h4>বৈশিষ্ট্যসমূহ:</h4>
+          <div id="detailFeatures"></div>
+        </div>
+        <div class="detail-btn-row">
+          <button class="detail-btn" id="detailAddBtn">🛒 কার্টে যোগ করুন</button>
+          <button class="detail-buy-btn" id="detailBuyBtn">🚀 অর্ডার করুন</button>
+        </div>
+
+        <!-- ================= প্রোডাক্ট রিভিউ সেকশন ================= -->
+        <div class="reviews-section">
+          <h4>⭐ রিভিউ ও রেটিং</h4>
+          <div id="reviewSummary" class="review-summary"></div>
+
+          <div class="review-form">
+            <div class="review-star-picker" id="reviewStarPicker">
+              <span data-star="1">☆</span><span data-star="2">☆</span><span data-star="3">☆</span><span data-star="4">☆</span><span data-star="5">☆</span>
+            </div>
+            <input type="text" class="review-name-input" id="reviewName" placeholder="আপনার নাম">
+            <textarea class="review-text-input" id="reviewText" placeholder="প্রোডাক্ট নিয়ে আপনার মতামত লিখুন..."></textarea>
+            <button class="review-submit-btn" onclick="submitReview()">রিভিউ পাঠান</button>
+          </div>
+
+          <div id="reviewsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📦 অর্ডার করুন</h3>
+      <button class="close-btn" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="order-summary-box" id="orderSummary"></div>
+      <div class="form-group">
+        <label>আপনার পুরো নাম *</label>
+        <input type="text" id="custName" placeholder="যেমন: রহিম মিয়া">
+      </div>
+      <div class="form-group">
+        <label>আপনার মোবাইল নাম্বার *</label>
+        <input type="tel" id="custPhone" placeholder="📞  যেমন: 01XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label>আপনার সম্পূর্ণ ঠিকানা *</label>
+        <textarea id="custAddress" rows="2" placeholder="📍  বাড়ি/রোড/গ্রাম, এলাকা ও প্রয়োজনীয় ঠিকানা লিখুন"></textarea>
+      </div>
+      <div class="form-group">
+        <label>বিভাগ *</label>
+        <select id="custDivision" onchange="onDivisionChange()">
+          <option value="">বিভাগ নির্বাচন করুন</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>জেলা *</label>
+        <select id="custDistrict" onchange="onDistrictChange()">
+          <option value="">জেলা নির্বাচন করুন</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>এলাকা / থানা *</label>
+        <input type="text" id="custThana" placeholder="থানা/উপজেলার নাম লিখুন">
+      </div>
+      <div class="form-group">
+        <label>পেমেন্ট পদ্ধতি *</label>
+        <div class="payment-options">
+          <div class="pay-opt" onclick="selectPayment('bkash')" id="payBkash">
+            <span class="pay-icon">💳</span>bKash/Nagad
+          </div>
+          <div class="pay-opt" onclick="selectPayment('cod')" id="payCod">
+            <span class="pay-icon">💵</span>ক্যাশ অন ডেলিভারি
+          </div>
+        </div>
+        <div class="bkash-info" id="bkashInfo">
+          <p>✅ নিচের <b>"অর্ডার কনফার্ম করুন"</b> বাটনে ক্লিক করলে ধাপে ধাপে পেমেন্টের নির্দেশনা দেখতে পাবেন।</p>
+          <div class="txnid-guide" onclick="window.open('https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/IMG-20260725-WA0001.jpg','_blank')">
+            <img src="https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/IMG-20260725-WA0001.jpg" alt="TxnID কোথায় পাবেন">
+            <span>📌 কিভাবে TxnID পাবেন দেখুন<br>(ছবিতে ক্লিক করুন)</span>
+          </div>
+          <input type="hidden" id="custTxnId">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ডেলিভারি এলাকা *</label>
+        <div class="payment-options">
+          <div class="pay-opt selected" onclick="selectDelivery('dhaka')" id="delivDhaka">
+            <span class="pay-icon">🏠</span>ঢাকার ভিতরে (৳70)
+          </div>
+          <div class="pay-opt" onclick="selectDelivery('outside')" id="delivOutside">
+            <span class="pay-icon">🚚</span>ঢাকার বাইরে (৳130)
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>আপনার বিশেষ মতামত (ঐচ্ছিক)</label>
+        <textarea id="custNote" rows="2" placeholder="পণ্য বা ডেলিভারি সম্পর্কে কোনো বিশেষ নির্দেশনা থাকলে লিখুন..."></textarea>
+      </div>
+      <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+        <label for="custWebsite">Website</label>
+        <input type="text" id="custWebsite" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="submit-order" onclick="placeOrder()">🚀 অর্ডার কনফার্ম করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT GATEWAY OVERLAY: bKash/Nagad ধাপে ধাপে (ম্যানুয়াল) পেমেন্ট ফ্লো -->
+<div class="pgw-overlay" id="pgwOverlay">
+  <div class="pgw-topbar">
+    <button onclick="closePaymentGateway()">✕</button>
+    <span>🔒 Secure Payment</span>
+    <span style="width:16px;"></span>
+  </div>
+
+  <!-- ধাপ ১: Processing -->
+  <div class="pgw-body pgw-processing" id="pgwStep1">
+    <div class="pgw-spinner">💳</div>
+    <h4>Processing Order</h4>
+    <p>Redirecting to payment...</p>
+  </div>
+
+  <!-- ধাপ ২: পেমেন্ট পদ্ধতি নির্বাচন -->
+  <div class="pgw-body" id="pgwStep2" style="display:none;">
+    <div class="pgw-brand-logo">GHB</div>
+    <div class="pgw-site-name">Gadget Hunter BD</div>
+    <div class="pgw-choose-title">পেমেন্ট পদ্ধতি নির্বাচন করুন</div>
+    <div class="pgw-method-grid">
+      <div class="pgw-method-card" onclick="selectGatewayMethod('bkash')">
+        <div class="pgw-mlogo" style="color:#E2136E;">bKash</div>
+        <div class="pgw-mnote">শুধুমাত্র bKash থেকে bKash এ সেন্ডমানি করবেন</div>
+      </div>
+      <div class="pgw-method-card" onclick="selectGatewayMethod('nagad')">
+        <div class="pgw-mlogo" style="color:#F6871F;">নগদ</div>
+        <div class="pgw-mnote">শুধুমাত্র Nagad থেকে Nagad এ সেন্ডমানি করবেন</div>
+      </div>
+    </div>
+    <div class="pgw-pay-footer" id="pgwPayFooter">Pay ৳0</div>
+  </div>
+
+  <!-- ধাপ ৩: নির্দেশনা + Transaction ID -->
+  <div class="pgw-body" id="pgwStep3" style="display:none;">
+    <div class="pgw-site-box">
+      <div class="pgw-site-mini-logo" id="pgwMethodLogo" style="display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;">bK</div>
+      <div>
+        <div style="font-weight:800;font-size:15px;">Gadget Hunter BD</div>
+        <div style="font-size:12px;color:var(--gray);" id="pgwMethodName">bKash Personal</div>
+      </div>
+    </div>
+    <div class="pgw-amount-box" id="pgwAmountBox">৳ 0</div>
+    <div class="pgw-instr-box">
+      <div class="pgw-instr-item"><span class="dot"></span><span>আপনার <b id="pgwAppName">bKash</b> মোবাইল অ্যাপে যান।</span></div>
+      <div class="pgw-instr-item"><span class="dot"></span><span><b>Send Money</b> -এ ক্লিক করুন।</span></div>
+      <div class="pgw-instr-item">
+        <span class="dot"></span>
+        <span>প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুনঃ<br><b id="pgwNumber" style="font-size:16px;">01796716499</b>
+          <button class="pgw-copy-btn" onclick="pgwCopy('pgwNumber')">📋 কপি করুন</button>
+        </span>
+      </div>
+      <div class="pgw-instr-item">
+        <span class="dot"></span>
+        <span>টাকার পরিমাণঃ <b id="pgwAmountText">0</b>
+          <button class="pgw-copy-btn" onclick="pgwCopy('pgwAmountText')">📋 কপি করুন</button>
+        </span>
+      </div>
+      <div class="pgw-instr-item"><span class="dot"></span><span>নিশ্চিত করতে এখন আপনার <b id="pgwAppName2">bKash</b> পিন লিখুন।</span></div>
+      <div class="pgw-instr-item"><span class="dot"></span><span>এখন নিচের বক্সে আপনার <b>Transaction ID</b> দিন এবং নিচের <b>Verify</b> বাটনে ক্লিক করুন।</span></div>
+      <input type="text" class="pgw-txn-input" id="pgwTxnInput" placeholder="ট্রানজেকশন আইডি লিখুন">
+    </div>
+    <button class="pgw-verify-btn" onclick="verifyGatewayPayment()">VERIFY</button>
+  </div>
+</div>
+
+<!-- CUSTOMER LOGIN/SIGNUP MODAL -->
+<div class="modal-overlay" id="customerAuthModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>👤 কাস্টমার একাউন্ট</h3>
+      <button class="close-btn" onclick="closeCustomerAuthModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="authTabLoginBtn" onclick="switchAuthTab('login')">লগইন</button>
+        <button class="auth-tab-btn" id="authTabSignupBtn" onclick="switchAuthTab('signup')">নতুন একাউন্ট</button>
+      </div>
+
+      <div id="authLoginForm">
+        <div class="form-group">
+          <label>ইমেইল</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label>পাসওয়ার্ড</label>
+          <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" onkeydown="if(event.key==='Enter')customerLogin()">
+        </div>
+        <div class="auth-error" id="loginAuthError"></div>
+        <button class="auth-submit-btn" id="loginSubmitBtn" onclick="customerLogin()">লগইন করুন</button>
+      </div>
+
+      <div id="authSignupForm" style="display:none;">
+        <div class="form-group">
+          <label>আপনার নাম *</label>
+          <input type="text" id="signupName" placeholder="আপনার পুরো নাম">
+        </div>
+        <div class="form-group">
+          <label>মোবাইল নম্বর</label>
+          <input type="tel" id="signupPhone" placeholder="01XXXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label>ইমেইল *</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label>পাসওয়ার্ড *</label>
+          <input type="password" id="signupPassword" placeholder="কমপক্ষে ৬ ক্যারেক্টার" onkeydown="if(event.key==='Enter')customerSignup()">
+        </div>
+        <div class="auth-error" id="signupAuthError"></div>
+        <button class="auth-submit-btn" id="signupSubmitBtn" onclick="customerSignup()">একাউন্ট তৈরি করুন</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MY ORDERS MODAL -->
+<div class="modal-overlay" id="myOrdersModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📦 আমার অর্ডার</h3>
+      <button class="close-btn" onclick="closeMyOrders()">✕</button>
+    </div>
+    <div class="modal-body" id="myOrdersBody">
+      <p style="font-size:13px;color:#999;">লোড হচ্ছে...</p>
+    </div>
+  </div>
+</div>
+
+<!-- TRACK ORDER MODAL (লগইন ছাড়াই মোবাইল নাম্বার বা অর্ডার আইডি দিয়ে ট্র্যাক করা যাবে) -->
+<div class="modal-overlay" id="trackOrderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🔍 অর্ডার ট্র্যাক করুন</h3>
+      <button class="close-btn" onclick="closeTrackOrder()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>মোবাইল নাম্বার অথবা অর্ডার আইডি *</label>
+        <input type="text" id="trackInput" placeholder="যেমন: 01712345678 বা GHB1737...">
+      </div>
+      <button class="submit-order" onclick="searchTrackOrder()">🔍 খুঁজুন</button>
+      <div id="trackResultBody" style="margin-top:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-modal" id="successModal">
+  <div class="success-box">
+    <div class="success-icon">🎉</div>
+    <h2>Order Complete</h2>
+    <p>আপনার অর্ডারটি সম্পন্ন হয়েছে।<br><strong>৭২ ঘণ্টার মধ্যে আপনি প্রোডাক্ট পেয়ে যাবেন।</strong><br>ধন্যবাদ Gadget Hunter BD কে বেছে নেওয়ার জন্য!</p>
+    <div class="order-id" id="successOrderId" style="font-size:14px;margin-bottom:12px;"></div>
+    <button class="success-close" onclick="closeSuccess()">ঠিক আছে</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <h2>⚙️ Me</h2>
+    <button class="close-btn" onclick="closeAdmin()">✕</button>
+  </div>
+  <div id="adminLoginBox">
+    <div class="admin-login">
+      <h2>🔐 Admin Login</h2>
+      <input type="password" id="adminPass" placeholder="Password লিখুন" onkeydown="if(event.key==='Enter')checkAdmin()">
+      <button onclick="checkAdmin()">প্রবেশ করুন</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+  <div id="adminDashboard" style="display:none;">
+    <div class="admin-tabs">
+      <button class="tab-btn active" onclick="showTab('orders')">📦 অর্ডার</button>
+      <button class="tab-btn" onclick="showTab('stats')">📊 পরিসংখ্যান</button>
+      <button class="tab-btn" onclick="showTab('addproduct')">➕ নতুন পণ্য</button>
+      <button class="tab-btn" onclick="showTab('manageproduct')">✏️ পণ্য এডিট</button>
+      <button class="tab-btn" onclick="showTab('design')">🎨 ডিজাইন</button>
+      <button class="tab-btn" onclick="showTab('texteditor')">📝 লেখা</button>
+      <button class="tab-btn" onclick="showTab('banner')">🖼️ ব্যানার/লোগো</button>
+    </div>
+    <div class="admin-content">
+      <div id="tabOrders">
+        <div id="notifBanner" style="background:#FFF3CD;border:1px solid #FFC107;border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <span style="font-size:13px;font-weight:600;">🔔 নতুন অর্ডারের নোটিফিকেশন চালু করুন</span>
+          <button onclick="enableNotifications()" style="background:#FF6B00;color:white;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">চালু করুন</button>
+        </div>
+        <div class="orders-list" id="adminOrdersList"></div>
+      </div>
+      <div id="tabStats" style="display:none;">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">মোট অর্ডার</div></div>
+          <div class="stat-card"><div class="stat-num" id="statPending">0</div><div class="stat-label">পেন্ডিং</div></div>
+          <div class="stat-card"><div class="stat-num" id="statConfirmed">0</div><div class="stat-label">কনফার্মড</div></div>
+          <div class="stat-card"><div class="stat-num" id="statRevenue">৳0</div><div class="stat-label">মোট আয়</div></div>
+        </div>
+      </div>
+      <div id="tabAddproduct" style="display:none;">
+        <div class="admin-product-form">
+          <h4>➕ নতুন প্রোডাক্ট যোগ করুন</h4>
+          <input type="text" id="newName" placeholder="প্রোডাক্টের নাম *">
+          <input type="text" id="newPrice" placeholder="বর্তমান দাম (যেমন: ৳ 620) *">
+          <input type="text" id="newOldPrice" placeholder="আগের দাম (যেমন: ৳ 1200) *">
+          <input type="text" id="newImg" placeholder="ইমেজ URL *">
+          <textarea id="newFeatures" rows="5" placeholder="বৈশিষ্ট্য (প্রতিটি লাইনে একটি)&#10;✓ ANC Noise Cancellation&#10;✓ 6 ঘণ্টা ব্যাটারি"></textarea>
+          <input type="text" id="newDiscount" placeholder="ছাড় (যেমন: 30% OFF)">
+          <select id="newCat">
+            <option value="">ক্যাটাগরি বেছে নিন *</option>
+            <option>অডিও</option><option>ইলেকট্রনিক্স</option><option>ওয়াচ</option>
+            <option>গেমিং</option><option>ফ্যাশন</option><option>হোম</option>
+            <option>হেলথ</option><option>এক্সেসরিজ</option><option>টুলস</option>
+          </select>
+          <button class="admin-save-btn" onclick="addNewProduct()">✅ প্রোডাক্ট যোগ করুন</button>
+        </div>
+      </div>
+      <div id="tabManageproduct" style="display:none;">
+        <div class="admin-product-list" id="adminProductList"></div>
+      </div>
+
+      <!-- 🎨 DESIGN TAB -->
+      <div id="tabDesign" style="display:none;">
+        <div class="admin-product-form">
+          <h4>🎨 রঙ পরিবর্তন করুন</h4>
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:6px;">প্রাইমারি রঙ (বাটন, দাম)</label>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+            <input type="color" id="colorPrimary" value="#FF6B00" style="width:50px;height:40px;border:none;border-radius:8px;cursor:pointer;padding:2px;">
+            <span style="font-size:13px;color:#666;">বর্তমান: অরেঞ্জ (#FF6B00)</span>
+          </div>
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:6px;">Header রঙ</label>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+            <input type="color" id="colorDark" value="#111827" style="width:50px;height:40px;border:none;border-radius:8px;cursor:pointer;padding:2px;">
+            <span style="font-size:13px;color:#666;">বর্তমান: গাঢ় কালো</span>
+          </div>
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:8px;">রেডিমেড থিম</label>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+            <button onclick="applyTheme('#FF6B00','#111827')" style="background:#FF6B00;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🟠 অরেঞ্জ</button>
+            <button onclick="applyTheme('#2563EB','#1E3A5F')" style="background:#2563EB;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🔵 ব্লু</button>
+            <button onclick="applyTheme('#10B981','#064E3B')" style="background:#10B981;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🟢 গ্রিন</button>
+            <button onclick="applyTheme('#8B5CF6','#2D1B69')" style="background:#8B5CF6;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🟣 পার্পল</button>
+            <button onclick="applyTheme('#EF4444','#7F1D1D')" style="background:#EF4444;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🔴 রেড</button>
+            <button onclick="applyTheme('#F59E0B','#1C1917')" style="background:#F59E0B;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🟡 গোল্ড</button>
+          </div>
+          <button class="admin-save-btn" onclick="applyCustomColors()">✅ কাস্টম রঙ লাগাও</button>
+        </div>
+      </div>
+
+      <!-- 📝 TEXT EDITOR TAB -->
+      <div id="tabTexteditor" style="display:none;">
+        <div class="admin-product-form">
+          <h4>📝 লেখা পরিবর্তন করুন</h4>
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">শপের নাম (লোগো)</label>
+          <input type="text" id="txtShopName" value="GadgetHunter BD" placeholder="শপের নাম">
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">Hero বড় লেখা (লাইন ১)</label>
+          <input type="text" id="txtHero1" value="বাংলাদেশের সেরা" placeholder="লাইন ১">
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">Hero বড় লেখা (লাইন ২)</label>
+          <input type="text" id="txtHero2" value="গ্যাজেট শপ" placeholder="লাইন ২">
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">Hero ছোট লেখা</label>
+          <input type="text" id="txtHeroSub" value="সকল পণ্যে সেরা ছাড় • দ্রুত ডেলিভারি • ক্যাশ অন ডেলিভারি" placeholder="সাবটাইটেল">
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">ফোন নম্বর</label>
+          <input type="text" id="txtPhone" value="01796716499" placeholder="01XXXXXXXXX">
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">Footer কপিরাইট লেখা</label>
+          <input type="text" id="txtFooter" value="© 2025 Gadget Hunter BD — সকল স্বত্ব সংরক্ষিত" placeholder="কপিরাইট">
+          <button class="admin-save-btn" onclick="applyTextChanges()">✅ লেখা আপডেট করুন</button>
+        </div>
+      </div>
+
+      <!-- 🖼️ BANNER/LOGO TAB -->
+      <div id="tabBanner" style="display:none;">
+        <div class="admin-product-form">
+          <h4>🖼️ ব্যানার পরিবর্তন করুন</h4>
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">Hero ব্যাকগ্রাউন্ড ইমেজ URL (ঐচ্ছিক)</label>
+          <input type="text" id="bannerUrl" placeholder="https://... (ছেড়ে দিলে রঙিন থাকবে)">
+          <button class="admin-save-btn" onclick="applyBanner()" style="margin-bottom:10px;">✅ ব্যানার লাগাও</button>
+          <button class="admin-save-btn" onclick="removeBanner()" style="background:#6B7280;">🗑️ ব্যানার সরাও</button>
+
+          <h4 style="margin-top:16px;">🔤 লোগো ইমেজ যোগ করুন</h4>
+          <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">লোগো ইমেজ URL</label>
+          <input type="text" id="logoUrl" placeholder="https://... (লোগো ছবির লিংক)">
+          <div style="font-size:12px;color:#999;margin-bottom:8px;">লোগো না দিলে টেক্সট লোগো থাকবে</div>
+          <button class="admin-save-btn" onclick="applyLogo()">✅ লোগো লাগাও</button>
+          <button class="admin-save-btn" onclick="removeLogo()" style="background:#6B7280;margin-top:8px;">🗑️ লোগো সরাও</button>
+
+          <h4 style="margin-top:16px;">🎨 Hero গ্রেডিয়েন্ট</h4>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+            <button onclick="applyHeroGradient('linear-gradient(135deg,#111827 0%,#1F2937 50%,#FF6B00 100%)')" style="background:linear-gradient(135deg,#111827,#FF6B00);color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🟠 ডিফল্ট</button>
+            <button onclick="applyHeroGradient('linear-gradient(135deg,#0F172A 0%,#1E3A5F 50%,#2563EB 100%)')" style="background:linear-gradient(135deg,#0F172A,#2563EB);color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🔵 ব্লু</button>
+            <button onclick="applyHeroGradient('linear-gradient(135deg,#064E3B 0%,#065F46 50%,#10B981 100%)')" style="background:linear-gradient(135deg,#064E3B,#10B981);color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🟢 গ্রিন</button>
+            <button onclick="applyHeroGradient('linear-gradient(135deg,#1a0533 0%,#2D1B69 50%,#8B5CF6 100%)')" style="background:linear-gradient(135deg,#1a0533,#8B5CF6);color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">🟣 পার্পল</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP BUTTON -->
+<a class="wa-btn" href="https://wa.me/8801796716499?text=আমি%20Gadget%20Hunter%20BD%20থেকে%20অর্ডার%20করতে%20চাই" target="_blank" title="WhatsApp এ অর্ডার করুন">💬</a>
+
+<!-- MESSENGER BUTTON -->
+<a class="msg-btn" href="https://m.me/1180644401807358" target="_blank" title="Messenger এ মেসেজ করুন">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.19 2 11.34c0 2.93 1.44 5.54 3.7 7.24V22l3.38-1.86c.9.25 1.86.38 2.92.38 5.52 0 10-4.19 10-9.34S17.52 2 12 2zm1.02 12.58l-2.55-2.72-4.98 2.72 5.48-5.82 2.61 2.72 4.9-2.72-5.46 5.82z"/></svg>
+</a>
+
+<!-- EDIT PRODUCT MODAL -->
+<div class="edit-modal" id="editModal">
+  <div class="edit-modal-box">
+    <h3>✏️ প্রোডাক্ট এডিট করুন</h3>
+    <input type="hidden" id="editIdx">
+    <label>প্রোডাক্টের নাম</label>
+    <input type="text" id="editName" placeholder="নাম">
+    <label>বর্তমান দাম (যেমন: ৳ 620)</label>
+    <input type="text" id="editPrice" placeholder="৳ 620">
+    <label>আগের দাম (যেমন: ৳ 1200)</label>
+    <input type="text" id="editOldPrice" placeholder="৳ 1200">
+    <label>ছাড় (যেমন: 48% OFF)</label>
+    <input type="text" id="editDiscount" placeholder="48% OFF">
+    <label>ইমেজ URL</label>
+    <input type="text" id="editImg" placeholder="https://...">
+    <label>বৈশিষ্ট্য (প্রতিটি লাইনে একটি)</label>
+    <textarea id="editFeatures" rows="5" placeholder="✓ ANC Noise Cancellation&#10;✓ 6 ঘণ্টা ব্যাটারি"></textarea>
+    <label>ক্যাটাগরি</label>
+    <input type="text" id="editCat" placeholder="অডিও / ওয়াচ / গেমিং...">
+    <button class="edit-save-btn" onclick="saveProductEdit()">💾 সেভ করুন</button>
+    <button class="edit-cancel-btn" onclick="closeEditModal()">বাতিল</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCgBv89GvG4qF-_ZY3IZerZGTfjbAyLYc4",
+    authDomain: "gadget-hunter-bd.firebaseapp.com",
+    projectId: "gadget-hunter-bd",
+    storageBucket: "gadget-hunter-bd.firebasestorage.app",
+    messagingSenderId: "221126881896",
+    appId: "1:221126881896:web:5e62f9f14c32b684c141dd",
+    measurementId: "G-7H6P8LYPZ5"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+</script>
+
+<script>
+const PRODUCTS = [
+  ["Apple Airpods pro 2nd Gen","৳ 620","৳ 1200","https://6a59347f116fd9eb0759f5a1.imgix.net/sandbox/931cd5117b9d1671860136f73dcda0a1%20(1).jpg","✓ ANC Noise Cancellation<br>✓ 6 ঘণ্টা ব্যাটারি<br>✓ প্রিমিয়াম বেস সাউন্ড<br>✓ iPhone & Android<br>✓ ১ বছর ওয়ারেন্টি","48% OFF","অডিও"],
+  ["TOKQI M01 Gimbal","৳ 6620","৳ 8500","https://6a4e5031ae4883bf378b8acd.imgix.net/sandbox/An-kFaiPnup6T1xDpC53VP3BW8YIFMpMgg-HeeAHkU_RzNIxJOSYMndAKvq81ViKP3ReIwhA6xYfBGJvKIpNeyGhdIRIGVrEatd93lPXnSyv.jpeg","✓ 3-Axis Stabilizer<br>✓ ভিডিও কাঁপবে না<br>✓ Object Tracking<br>✓ 12 ঘণ্টা ব্যাটারি<br>✓ Vlogging বেস্ট","22% OFF","ইলেকট্রনিক্স"],
+  ["Razer BlackShark V2","৳ 5990","৳ 7000","https://6a4e5031ae4883bf378b8acd.imgix.net/sandbox/An9mlgZHEPR4HGazHk1NDH-kKV4MiRi3sgjjScl-Gg1TuFckqGdViL2VQZDW3itvJAU82DWlyoPdM4ci8pXpMNsL1db6ynUV6yRetukhT9m-.jpeg","✓ THX 7.1 Surround<br>✓ নয়েজ ক্যান্সেলিং মাইক<br>✓ মেমোরি ফোম কুশন<br>✓ PC/PS/Xbox<br>✓ 2 বছর ওয়ারেন্টি","15% OFF","অডিও"],
+  ["S2000 Pro Max Watch","৳ 1600","৳ 2500","https://6a59347f116fd9eb0759f5a1.imgix.net/sandbox/An9m9ONtAqe-dOWGiJQi4w55IkcfN9dxz5lSZq3FgeYMdcbK20Q4p7rW0umjk-4gNsljzFlTIl9_rxiTZHzhWFLPwP7U3qIzMqu6bvdeDV7I.jpeg","✓ Apple Ultra লুক<br>✓ IP67 Waterproof<br>✓ Calling Feature<br>✓ Heart Rate Track<br>✓ 7 দিন ব্যাটারি","36% OFF","ওয়াচ"],
+  ["F11-2 Wireless Mic","৳ 1200","৳ 1800","https://6a4e5031ae4883bf378b8acd.imgix.net/sandbox/An8eeWTUCy4-tX22Uxkl2l7_UzXEnt6zgwIaX3qJwUbPeLv9yMM31UYUEJxV2Lfczz4IlpdAQMog_Uq2PmC3rzOcnP0Tnp6sB5Jh5-2tvmda.jpeg","✓ 20 মিটার ক্লিয়ার<br>✓ সব ফোনে চলবে<br>✓ নয়েজ ক্যান্সেল<br>✓ 6 ঘণ্টা ব্যাটারি<br>✓ YouTube বেস্ট","33% OFF","অডিও"],
+  ["Ultra S9 Watch","৳ 4350","৳ 5000","https://6a59347f116fd9eb0759f5a1.imgix.net/sandbox/An-OZFs3JKPqMnsrfQP8JMjzz9TXc8LpZpZAW9jJgjdCTcccQU11OdXvbTUCyfjdcL55mdHFXm72KR6gAUEds3L_ZIhlP7ogjMrhnytrogG1.jpeg","✓ Android সিম সাপোর্ট<br>✓ FB, WhatsApp<br>✓ 4G Calling<br>✓ Play Store<br>✓ 2GB RAM","13% OFF","ওয়াচ"],
+  ["Mini Massage Gun","৳ 999","৳ 1590","https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/Use_product_3d_showcase_202606122337%20(1).jpeg?min-h=6468&fit=crop","✓ 5 মিনিটে রিলাক্স<br>✓ 4 হেড<br>✓ Type-C<br>✓ 1500mAh<br>✓ বাসা ও জিম","37% OFF","হেলথ"],
+  ["Waterproof Box","৳ 580","৳ 950","https://6a4e5031ae4883bf378b8acd.imgix.net/sandbox/An-icOKukfinU7EdRjv2By7eW0seXGilrsDSnoJrAbXjHs0xJxahby7zfERnUpktVqueJ7r1lR9gp2KYvtcno2KrPrsFzhg5Vw3t8r4aHRws.jpeg","✓ 100% ওয়াটারপ্রুফ<br>✓ ফোন, টাকা রাখা যায়<br>✓ সুইমিং বেস্ট<br>✓ সিলিকন সিল<br>✓ টেকসই","39% OFF","এক্সেসরিজ"],
+  ["Memo CX07 Cooler","৳ 1180","৳ 1800","https://6a59347f116fd9eb0759f5a1.imgix.net/sandbox/618fed9d5c0614941620-wcb94evuuber0lvtfzmh.webp?max-w=6055","✓ 10° ঠান্ডা<br>✓ ল্যাগ 0<br>✓ RGB<br>✓ Type-C<br>✓ PUBG বেস্ট","34% OFF","গেমিং"],
+  ["5 in 1 Gaming Combo","৳ 1980","৳ 3000","https://6a4e5031ae4883bf378b8acd.imgix.net/sandbox/vywwq6mjycil9ferpdm6%20(1).webp","✓ কিবোর্ড+মাউস<br>✓ মাউসপ্যাড ফ্রি<br>✓ RGB 7 কালার<br>✓ গেমিং বেস্ট<br>✓ PC/Laptop","34% OFF","গেমিং"],
+  ["HY300 4K Projector","৳ 5000","৳ 7800","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.45.05.jpeg","✓ 120 ইঞ্চি 4K<br>✓ Android 11<br>✓ Auto Focus<br>✓ WiFi 6<br>✓ 2000 Lumens","36% OFF","ইলেকট্রনিক্স"],
+  ["Electric Screwdriver","৳ 1400","৳ 2340","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.45.06.jpeg","✓ রিচার্জেবল<br>✓ 28 বিট<br>✓ LED Light<br>✓ Type-C<br>✓ বাসার জন্য","40% OFF","টুলস"],
+  ["Tissot Premium Watch","৳ 1320","৳ 2190","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.50%20(2).jpeg","✓ প্রিমিয়াম লুক<br>✓ Stainless Steel<br>✓ Waterproof<br>✓ ওয়ারেন্টি<br>✓ গিফট বক্স","40% OFF","ওয়াচ"],
+  ["New Aura Arabic Watch","৳ 550","৳ 910","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.51.jpeg","✓ আরবি ডায়াল<br>✓ প্রিমিয়াম<br>✓ লাইটওয়েট<br>✓ স্টাইলিশ<br>✓ ছেলেদের জন্য","40% OFF","ওয়াচ"],
+  ["Polygonal Sunglasses","৳ 1000","৳ 1390","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.50.jpeg","✓ UV400<br>✓ Polygonal Design<br>✓ পোলারাইজড<br>✓ লাইটওয়েট<br>✓ ট্রেন্ডি","28% OFF","ফ্যাশন"],
+  ["Aura Matte Black","৳ 320","৳ 690","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.50%20(1).jpeg","✓ ম্যাট ব্ল্যাক<br>✓ UV Protection<br>✓ লাইটওয়েট<br>✓ স্টাইলিশ<br>✓ সবার জন্য","54% OFF","ফ্যাশন"],
+  ["Millionare Sunglass","৳ 1000","৳ 1590","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.49.jpeg","✓ সেলিব্রিটি লুক<br>✓ UV400<br>✓ প্রিমিয়াম মেটাল<br>✓ কেস ফ্রি<br>✓ গিফট বক্স","37% OFF","ফ্যাশন"],
+  ["Vintage Glasses","৳ 330","৳ 840","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.49%20(1).jpeg","✓ ভিন্টেজ ডিজাইন<br>✓ ট্রেন্ডি<br>✓ UV Protection<br>✓ হালকা<br>✓ ছেলে/মেয়ে","61% OFF","ফ্যাশন"],
+  ["Hand Fan","৳ 580","৳ 780","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.48.jpeg","✓ 3 স্পিড<br>✓ রিচার্জেবল<br>✓ 5 ঘণ্টা ব্যাটারি<br>✓ মিনি সাইজ<br>✓ টেবিল ফ্যান","26% OFF","হোম"],
+  ["Grape Peeler","৳ 1650","৳ 2099","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.52%20(1).jpeg","✓ আঙ্গুর খোসা ছাড়াবে<br>✓ স্টেইনলেস স্টিল<br>✓ হাত কাটবে না<br>✓ কিচেন বেস্ট<br>✓ টাইম সেভ","21% OFF","হোম"],
+  ["Turbo Fan","৳ 780","৳ 1300","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.44.48%20(2).jpeg","✓ মিনি সাইজ<br>✓ সুপার বাতাস<br>✓ Type-C<br>✓ 6 ঘণ্টা<br>✓ গরমের বেস্ট","40% OFF","হোম"],
+  ["Bubble Watch","৳ 999","৳ 1640","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.45.08%20(1).jpeg","✓ বাবল ডিজাইন<br>✓ পানি বের হয়<br>✓ বাচ্চাদের প্রিয়<br>✓ রিচার্জেবল<br>✓ গিফট বেস্ট","39% OFF","ওয়াচ"],
+  ["Data Cable Set","৳ 480","৳ 700","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.45.02%20(2).jpeg","✓ 4 in 1 ক্যাবল<br>✓ 65W ফাস্ট চার্জ<br>✓ iPhone/Type-C<br>✓ 1.2 মিটার<br>✓ টেকসই","31% OFF","এক্সেসরিজ"],
+  ["EQ34 Earbud","৳ 1020","৳ 1400","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.45.03%20(1).jpeg","✓ মিনি সাইজ<br>✓ 20 ঘণ্টা ব্যাটারি<br>✓ HD Sound<br>✓ Type-C<br>✓ গেমিং মোড","27% OFF","অডিও"],
+  ["Mecha Speaker","৳ 1220","৳ 2200","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.45.03.jpeg","✓ রোবট ডিজাইন<br>✓ RGB Light<br>✓ ব্লুটুথ 5.3<br>✓ 6 ঘণ্টা ব্যাটারি<br>✓ বেস সাউন্ড","45% OFF","অডিও"],
+  ["Neck Fan","৳ 780","৳ 1000","https://6a5204b06f6c51bd39012dab.imgix.net/sandbox/WhatsApp%20Image%202026-07-11%20at%2014.45.05%20(1).jpeg","✓ গলায় ঝুলে<br>✓ হাত ফ্রি<br>✓ 8 ঘণ্টা ব্যাটারি<br>✓ ঠান্ডা বাতাস<br>✓ গরমের বেস্ট","22% OFF","হোম"]
+];
+
+let cart = [];
+let orders = [];
+let selectedPayment = '';
+let selectedDelivery = 'dhaka';
+const DELIVERY_CHARGE = { dhaka: 70, outside: 130 };
+let currentProducts = [...PRODUCTS];
+let currentDetailIdx = -1;
+
+// RENDER PRODUCTS
+function renderProducts(list) {
+  const grid = document.getElementById('productGrid');
+  if (list.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6B7280;">কোনো প্রোডাক্ট পাওয়া যায়নি</div>';
+    return;
+  }
+  grid.innerHTML = list.map((p, i) => `
+    <div class="product-card" onclick="openDetail(${PRODUCTS.indexOf(p)})">
+      <div class="discount-badge">${p[5]}</div>
+      <button class="wishlist-heart ${isWishlisted(PRODUCTS.indexOf(p)) ? 'active' : ''}" onclick="event.stopPropagation();toggleWishlist(${PRODUCTS.indexOf(p)})">${isWishlisted(PRODUCTS.indexOf(p)) ? '❤️' : '🤍'}</button>
+      <img class="product-img" src="${p[3]}" alt="${p[0]}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+      <div class="product-info">
+        <div class="product-name">${p[0]}</div>
+        <div class="product-prices">
+          <span class="price-current">${p[1]}</span>
+          <span class="price-old">${p[2]}</span>
+        </div>
+        <div class="card-btn-row">
+          <button class="cart-mini-btn" onclick="event.stopPropagation();addToCart(${PRODUCTS.indexOf(p)})" title="কার্টে যোগ করুন">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          </button>
+          <button class="add-to-cart" onclick="event.stopPropagation();buyNow(${PRODUCTS.indexOf(p)})">⚡ অর্ডার করুন</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCategory(cat) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  syncCategoryIcons(cat);
+  document.getElementById('searchInput').value = '';
+  if (cat === 'সব') {
+    currentProducts = [...PRODUCTS];
+    document.getElementById('sectionTitle').textContent = 'সকল প্রোডাক্ট';
+  } else {
+    currentProducts = PRODUCTS.filter(p => p[6] === cat);
+    document.getElementById('sectionTitle').textContent = cat + ' প্রোডাক্ট';
+  }
+  renderProducts(currentProducts);
+}
+
+// ক্যাটাগরি আইকন রো থেকে ফিল্টার করা (এবং pill filter-bar এর সাথে সিঙ্ক রাখা)
+function filterCategoryFromIcon(el, cat) {
+  document.querySelectorAll('.cat-icon-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.cat-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick') === "filterCategory('" + cat + "')");
+  });
+  document.getElementById('searchInput').value = '';
+  if (cat === 'সব') {
+    currentProducts = [...PRODUCTS];
+    document.getElementById('sectionTitle').textContent = 'সকল প্রোডাক্ট';
+  } else {
+    currentProducts = PRODUCTS.filter(p => p[6] === cat);
+    document.getElementById('sectionTitle').textContent = cat + ' প্রোডাক্ট';
+  }
+  renderProducts(currentProducts);
+  const sectionEl = document.querySelector('.section');
+  if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
+}
+
+function syncCategoryIcons(cat) {
+  document.querySelectorAll('.cat-icon-item').forEach(item => {
+    const onclickAttr = item.getAttribute('onclick') || '';
+    item.classList.toggle('active', onclickAttr.endsWith("'" + cat + "')"));
+  });
+}
+
+// ================= হিরো স্লাইডার =================
+let heroSlideIndex = 0;
+let heroSlideTimer = null;
+function heroSliderGo(i) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  if (!slides.length) return;
+  slides[heroSlideIndex].classList.remove('active');
+  dots[heroSlideIndex] && dots[heroSlideIndex].classList.remove('active');
+  heroSlideIndex = (i + slides.length) % slides.length;
+  slides[heroSlideIndex].classList.add('active');
+  dots[heroSlideIndex] && dots[heroSlideIndex].classList.add('active');
+}
+function heroSliderMove(dir) { heroSliderGo(heroSlideIndex + dir); resetHeroAutoSlide(); }
+function resetHeroAutoSlide() {
+  if (heroSlideTimer) clearInterval(heroSlideTimer);
+  heroSlideTimer = setInterval(() => heroSliderGo(heroSlideIndex + 1), 5000);
+}
+
+// ================= টপ সেলিং প্রোডাক্ট রেন্ডার =================
+function renderTopSelling() {
+  const wrap = document.getElementById('topSellingScroll');
+  if (!wrap) return;
+  const list = PRODUCTS.slice(0, 8);
+  wrap.innerHTML = list.map((p) => `
+    <div class="ts-card" onclick="openDetail(${PRODUCTS.indexOf(p)})">
+      <div class="ts-badges">
+        <span class="ts-badge best">Best Selling</span>
+        <span class="ts-badge hot">Hot</span>
+      </div>
+      <img src="${p[3]}" alt="${p[0]}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+      <div class="ts-card-info">
+        <div class="ts-card-name">${p[0]}</div>
+        <div><span class="ts-card-price">${p[1]}</span><span class="ts-card-oldprice">${p[2]}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ================= নিউজলেটার সাবস্ক্রাইব =================
+function subscribeNewsletter() {
+  const val = document.getElementById('newsletterEmail').value.trim();
+  if (!val) { showToast('❌ ইমেইল বা মোবাইল নাম্বার দিন!'); return; }
+  document.getElementById('newsletterEmail').value = '';
+  showToast('🎉 সাবস্ক্রাইব করার জন্য ধন্যবাদ!');
+}
+
+// ================= সাইড মেনু (হ্যামবার্গার ড্রয়ার) =================
+function openSideMenu() { document.getElementById('sideMenuOverlay').classList.add('open'); }
+function closeSideMenu() { document.getElementById('sideMenuOverlay').classList.remove('open'); }
+document.getElementById('sideMenuOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSideMenu();
+});
+
+function goHomeFromMenu() {
+  closeSideMenu();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ফিল্টার-বারের cat-btn গুলোর সাথে সিঙ্ক রেখে সাইড মেনু থেকে ক্যাটাগরি সিলেক্ট করার ফাংশন
+// (filterCategory() আলাদা রাখা হয়েছে কারণ সেটা ইনলাইন onclick থেকে আসা গ্লোবাল event অবজেক্টের উপর নির্ভর করে)
+function selectCategoryFromMenu(cat) {
+  closeSideMenu();
+  document.querySelectorAll('.cat-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick') === "filterCategory('" + cat + "')");
+  });
+  document.getElementById('searchInput').value = '';
+  if (cat === 'সব') {
+    currentProducts = [...PRODUCTS];
+    document.getElementById('sectionTitle').textContent = 'সকল প্রোডাক্ট';
+  } else {
+    currentProducts = PRODUCTS.filter(p => p[6] === cat);
+    document.getElementById('sectionTitle').textContent = cat + ' প্রোডাক্ট';
+  }
+  renderProducts(currentProducts);
+  const sectionEl = document.querySelector('.section');
+  if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
+}
+
+function openAboutUs() { closeSideMenu(); document.getElementById('aboutUsModal').classList.add('open'); }
+function closeAboutUs() { document.getElementById('aboutUsModal').classList.remove('open'); }
+function openFaqs() { closeSideMenu(); document.getElementById('faqModal').classList.add('open'); }
+function closeFaqs() { document.getElementById('faqModal').classList.remove('open'); }
+
+// ================= MY ACCOUNT (Daraz স্টাইল হাব) =================
+function openMyAccount() {
+  const headerText = document.getElementById('accHeaderText');
+  const loginBtn = document.getElementById('accLoginBtn');
+  const closeBtn = document.getElementById('accCloseBtn');
+  const logoutRow = document.getElementById('accLogoutRow');
+  if (currentCustomer) {
+    const label = currentCustomer.displayName || (currentCustomerProfile && currentCustomerProfile.name) || currentCustomer.email;
+    headerText.textContent = 'Hello, ' + label + '!';
+    loginBtn.style.display = 'none';
+    closeBtn.style.display = 'block';
+    logoutRow.style.display = 'flex';
+  } else {
+    headerText.textContent = 'Hello, Welcome to Gadget Hunter BD!';
+    loginBtn.style.display = 'block';
+    closeBtn.style.display = 'none';
+    logoutRow.style.display = 'none';
+  }
+  document.getElementById('myAccountModal').classList.add('open');
+}
+function closeMyAccount() { document.getElementById('myAccountModal').classList.remove('open'); }
+
+function openWhatsappChat() {
+  closeSideMenu();
+  window.open('https://wa.me/8801796716499?text=আমি%20একটা%20বিষয়ে%20জানতে%20চাই', '_blank');
+}
+
+// ================= WISHLIST (browser এ localStorage এ সেভ থাকে) =================
+function getWishlist() {
+  try { return JSON.parse(localStorage.getItem('ghb_wishlist') || '[]'); }
+  catch (e) { return []; }
+}
+function saveWishlist(list) {
+  try { localStorage.setItem('ghb_wishlist', JSON.stringify(list)); } catch (e) {}
+}
+function isWishlisted(idx) { return getWishlist().includes(idx); }
+function toggleWishlist(idx) {
+  let list = getWishlist();
+  if (list.includes(idx)) {
+    list = list.filter(i => i !== idx);
+    showToast('💔 Wishlist থেকে সরানো হয়েছে');
+  } else {
+    list.push(idx);
+    showToast('❤️ Wishlist এ যোগ হয়েছে');
+  }
+  saveWishlist(list);
+  renderProducts(currentProducts); // হার্ট আইকন রিফ্রেশ করার জন্য
+}
+function openWishlist() {
+  const body = document.getElementById('wishlistBody');
+  const list = getWishlist();
+  if (list.length === 0) {
+    body.innerHTML = '<div class="wishlist-empty">এখনো কোনো প্রোডাক্ট Wishlist এ নেই।<br>প্রোডাক্ট কার্ডে ❤️ আইকনে ট্যাপ করে যোগ করুন।</div>';
+  } else {
+    body.innerHTML = list.map(idx => {
+      const p = PRODUCTS[idx];
+      if (!p) return '';
+      return `
+        <div class="wishlist-item-row">
+          <img src="${p[3]}" alt="${p[0]}">
+          <div style="flex:1;">
+            <div class="wi-name">${p[0]}</div>
+            <div class="wi-price">${p[1]}</div>
+          </div>
+          <button class="cart-mini-btn" onclick="addToCart(${idx});showToast('✅ কার্টে যোগ হয়েছে!')" title="কার্টে যোগ করুন">🛒</button>
+          <button class="wi-remove" onclick="toggleWishlist(${idx});openWishlist();" title="সরান">✕</button>
+        </div>`;
+    }).join('');
+  }
+  document.getElementById('wishlistModal').classList.add('open');
+}
+function closeWishlist() { document.getElementById('wishlistModal').classList.remove('open'); }
+
+// ================= POLICIES =================
+function openPolicies() { document.getElementById('policiesModal').classList.add('open'); }
+function closePolicies() { document.getElementById('policiesModal').classList.remove('open'); }
+
+// ================= FEEDBACK =================
+function openFeedback() { document.getElementById('feedbackModal').classList.add('open'); }
+function closeFeedback() {
+  document.getElementById('feedbackModal').classList.remove('open');
+  document.getElementById('feedbackName').value = '';
+  document.getElementById('feedbackText').value = '';
+}
+function submitFeedback() {
+  const name = document.getElementById('feedbackName').value.trim() || 'নাম দেওয়া হয়নি';
+  const msg = document.getElementById('feedbackText').value.trim();
+  if (!msg) { showToast('⚠️ কিছু লিখুন প্রথমে'); return; }
+  const waText = encodeURIComponent('📝 ফিডব্যাক\nনাম: ' + name + '\nমতামত: ' + msg);
+  window.open('https://wa.me/8801796716499?text=' + waText, '_blank');
+  closeFeedback();
+  showToast('✅ ধন্যবাদ! WhatsApp এ পাঠানো হচ্ছে');
+}
+
+function searchProducts() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (!q) { currentProducts = [...PRODUCTS]; renderProducts(currentProducts); return; }
+  currentProducts = PRODUCTS.filter(p => p[0].toLowerCase().includes(q) || p[6].toLowerCase().includes(q));
+  document.getElementById('sectionTitle').textContent = `"${q}" এর ফলাফল (${currentProducts.length}টি)`;
+  renderProducts(currentProducts);
+}
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') searchProducts(); });
+
+// CART
+function addToCart(idx) {
+  const p = PRODUCTS[idx];
+  const existing = cart.find(c => c.idx === idx);
+  if (existing) { existing.qty++; }
+  else { cart.push({ idx, name: p[0], price: p[1], img: p[3], qty: 1 }); }
+  updateCartUI();
+  showToast('✅ কার্টে যোগ হয়েছে!');
+}
+function buyNow(idx) {
+  addToCart(idx);
+  openCheckout();
+}
+
+function updateCartUI() {
+  const total = cart.reduce((s, c) => s + c.qty, 0);
+  document.getElementById('cartCount').textContent = total;
+  const items = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  if (cart.length === 0) {
+    items.innerHTML = '<div class="cart-empty">🛒 কার্ট খালি আছে</div>';
+    footer.style.display = 'none'; return;
+  }
+  items.innerHTML = cart.map((c, i) => `
+    <div class="cart-item">
+      <img src="${c.img}" alt="${c.name}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${c.name}</div>
+        <div class="cart-item-price">${c.price}</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <span class="qty-num">${c.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+      </div>
+      <button class="remove-item" onclick="removeItem(${i})">🗑️</button>
+    </div>
+  `).join('');
+  const totalAmt = cart.reduce((s, c) => s + parseInt(c.price.replace(/[^\d]/g,'')) * c.qty, 0);
+  document.getElementById('cartTotal').textContent = `মোট: ৳ ${totalAmt.toLocaleString('bn')}`;
+  footer.style.display = 'block';
+}
+
+function changeQty(i, d) {
+  cart[i].qty += d;
+  if (cart[i].qty <= 0) cart.splice(i, 1);
+  updateCartUI();
+}
+function removeItem(i) { cart.splice(i, 1); updateCartUI(); }
+function openCart() { document.getElementById('cartSidebar').classList.add('open'); document.getElementById('cartOverlay').classList.add('open'); }
+function closeCart() { document.getElementById('cartSidebar').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); }
+
+// PRODUCT DETAIL
+function openDetail(idx) {
+  const p = PRODUCTS[idx];
+  currentDetailIdx = idx;
+  document.getElementById('detailImg').src = p[3];
+  document.getElementById('detailName').textContent = p[0];
+  document.getElementById('detailPrice').textContent = p[1];
+  document.getElementById('detailOldPrice').textContent = p[2];
+  document.getElementById('detailDiscount').textContent = p[5];
+  document.getElementById('detailFeatures').innerHTML = p[4].split('<br>').map(f => `<div class="feature-item">${f}</div>`).join('');
+  document.getElementById('detailAddBtn').onclick = () => { addToCart(idx); closeDetailModal(); };
+  document.getElementById('detailBuyBtn').onclick = () => { addToCart(idx); closeDetailModal(); openCheckout(); };
+  resetReviewForm();
+  loadReviews(idx);
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(e) { if (e.target === document.getElementById('detailOverlay')) closeDetailModal(); }
+function closeDetailModal() { document.getElementById('detailOverlay').classList.remove('open'); }
+
+// ================= প্রোডাক্ট রিভিউ, রেটিং, লাইক, কমেন্ট =================
+let selectedReviewStar = 0;
+
+document.getElementById('reviewStarPicker').addEventListener('click', function (e) {
+  const star = e.target.getAttribute('data-star');
+  if (!star) return;
+  selectedReviewStar = parseInt(star);
+  renderStarPicker();
+});
+function renderStarPicker() {
+  document.querySelectorAll('#reviewStarPicker span').forEach(s => {
+    s.textContent = parseInt(s.getAttribute('data-star')) <= selectedReviewStar ? '★' : '☆';
+    s.classList.toggle('active', parseInt(s.getAttribute('data-star')) <= selectedReviewStar);
+  });
+}
+function resetReviewForm() {
+  selectedReviewStar = 0;
+  renderStarPicker();
+  document.getElementById('reviewName').value = '';
+  document.getElementById('reviewText').value = '';
+}
+
+function submitReview() {
+  const name = document.getElementById('reviewName').value.trim();
+  const text = document.getElementById('reviewText').value.trim();
+  if (!selectedReviewStar) { showToast('⚠️ স্টার রেটিং দিন প্রথমে'); return; }
+  if (!name) { showToast('⚠️ নাম লিখুন'); return; }
+  if (!text) { showToast('⚠️ মতামত লিখুন'); return; }
+  db.collection('reviews').add({
+    productIdx: currentDetailIdx,
+    name: name,
+    rating: selectedReviewStar,
+    text: text,
+    likes: 0,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    showToast('✅ রিভিউ যোগ হয়েছে!');
+    resetReviewForm();
+    loadReviews(currentDetailIdx);
+  }).catch(err => {
+    console.error('Review submit failed:', err);
+    showToast('⚠️ রিভিউ পাঠাতে সমস্যা হয়েছে');
+  });
+}
+
+function loadReviews(idx) {
+  const listEl = document.getElementById('reviewsList');
+  const summaryEl = document.getElementById('reviewSummary');
+  listEl.innerHTML = '<div class="reviews-empty">লোড হচ্ছে...</div>';
+  db.collection('reviews').where('productIdx', '==', idx).get()
+    .then(snap => {
+      const reviews = [];
+      snap.forEach(doc => reviews.push({ id: doc.id, ...doc.data() }));
+      reviews.sort((a, b) => (b.createdAt && b.createdAt.seconds || 0) - (a.createdAt && a.createdAt.seconds || 0));
+
+      if (reviews.length === 0) {
+        summaryEl.textContent = 'এখনো কোনো রিভিউ নেই — প্রথম রিভিউটা আপনিই দিন!';
+        listEl.innerHTML = '';
+        return;
+      }
+      const avg = (reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length).toFixed(1);
+      summaryEl.innerHTML = `⭐ ${avg} / 5 <span style="color:var(--dark);font-weight:700;">(${reviews.length}টি রিভিউ)</span>`;
+
+      const likedIds = getLikedReviewIds();
+      listEl.innerHTML = reviews.map(r => {
+        const stars = '★'.repeat(r.rating || 0) + '☆'.repeat(5 - (r.rating || 0));
+        const liked = likedIds.includes(r.id);
+        return `
+          <div class="review-card" id="review-${r.id}">
+            <div class="review-card-head">
+              <span class="review-card-name">${escapeHtml(r.name)}</span>
+              <span class="review-card-stars">${stars}</span>
+            </div>
+            <div class="review-card-text">${escapeHtml(r.text)}</div>
+            <div class="review-card-actions">
+              <span class="${liked ? 'liked' : ''}" onclick="toggleLikeReview('${r.id}')">👍 লাইক (<span id="likeCount-${r.id}">${r.likes || 0}</span>)</span>
+              <span onclick="toggleComments('${r.id}')">💬 কমেন্ট</span>
+            </div>
+            <div class="review-comments" id="comments-${r.id}" style="display:none;"></div>
+          </div>`;
+      }).join('');
+    })
+    .catch(err => {
+      console.error('Reviews load failed:', err);
+      listEl.innerHTML = '<div class="reviews-empty">রিভিউ লোড করা যায়নি।</div>';
+    });
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+function getLikedReviewIds() {
+  try { return JSON.parse(localStorage.getItem('ghb_liked_reviews') || '[]'); }
+  catch (e) { return []; }
+}
+function saveLikedReviewIds(list) {
+  try { localStorage.setItem('ghb_liked_reviews', JSON.stringify(list)); } catch (e) {}
+}
+function toggleLikeReview(reviewId) {
+  let liked = getLikedReviewIds();
+  const isLiked = liked.includes(reviewId);
+  const delta = isLiked ? -1 : 1;
+  liked = isLiked ? liked.filter(id => id !== reviewId) : [...liked, reviewId];
+  saveLikedReviewIds(liked);
+
+  db.collection('reviews').doc(reviewId).update({
+    likes: firebase.firestore.FieldValue.increment(delta)
+  }).then(() => {
+    const countEl = document.getElementById('likeCount-' + reviewId);
+    const actionEl = document.querySelector(`#review-${reviewId} .review-card-actions span:first-child`);
+    if (countEl) countEl.textContent = parseInt(countEl.textContent) + delta;
+    if (actionEl) actionEl.classList.toggle('liked', !isLiked);
+  }).catch(err => console.error('Like failed:', err));
+}
+
+function toggleComments(reviewId) {
+  const box = document.getElementById('comments-' + reviewId);
+  if (box.style.display === 'block') { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  box.innerHTML = '<div class="reviews-empty" style="padding:8px 0;">লোড হচ্ছে...</div>';
+  db.collection('reviews').doc(reviewId).collection('comments').get()
+    .then(snap => {
+      const comments = [];
+      snap.forEach(doc => comments.push(doc.data()));
+      comments.sort((a, b) => (a.createdAt && a.createdAt.seconds || 0) - (b.createdAt && b.createdAt.seconds || 0));
+      const commentsHtml = comments.map(c => `<div class="comment-row"><b>${escapeHtml(c.name)}:</b> <span>${escapeHtml(c.text)}</span></div>`).join('');
+      box.innerHTML = commentsHtml +
+        `<div class="comment-form">
+          <input type="text" id="commentInput-${reviewId}" placeholder="কমেন্ট লিখুন...">
+          <button onclick="submitComment('${reviewId}')">পাঠান</button>
+        </div>`;
+    })
+    .catch(err => {
+      console.error('Comments load failed:', err);
+      box.innerHTML = '<div class="reviews-empty" style="padding:8px 0;">কমেন্ট লোড করা যায়নি।</div>';
+    });
+}
+
+function submitComment(reviewId) {
+  const input = document.getElementById('commentInput-' + reviewId);
+  const text = input.value.trim();
+  if (!text) return;
+  const name = (currentCustomer && (currentCustomer.displayName || (currentCustomerProfile && currentCustomerProfile.name))) || 'কাস্টমার';
+  db.collection('reviews').doc(reviewId).collection('comments').add({
+    name: name,
+    text: text,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    input.value = '';
+    toggleComments(reviewId); // বন্ধ
+    toggleComments(reviewId); // আবার খুলে রিফ্রেশড লিস্ট দেখানো
+  }).catch(err => console.error('Comment submit failed:', err));
+}
+
+// CHECKOUT
+function renderOrderSummary() {
+  const summary = cart.map(c => `<div class="sum-item"><span>${c.name} ×${c.qty}</span><span>${parseInt(c.price.replace(/[^\d]/g,''))*c.qty} ৳</span></div>`).join('');
+  const subtotal = cart.reduce((s,c) => s + parseInt(c.price.replace(/[^\d]/g,''))*c.qty, 0);
+  const delivery = DELIVERY_CHARGE[selectedDelivery];
+  const grandTotal = subtotal + delivery;
+  document.getElementById('orderSummary').innerHTML = summary +
+    `<div class="sum-item"><span>ডেলিভারি চার্জ</span><span>৳ ${delivery}</span></div>` +
+    `<div class="sum-item sum-total"><span>সর্বমোট</span><span>৳ ${grandTotal.toLocaleString()}</span></div>`;
+}
+// বাংলাদেশের বিভাগ ও জেলার তালিকা (বিভাগ → জেলা)
+const BD_DIVISIONS = {
+  "ঢাকা": ["ঢাকা","গাজীপুর","নারায়ণগঞ্জ","নরসিংদী","মানিকগঞ্জ","মুন্সিগঞ্জ","টাঙ্গাইল","কিশোরগঞ্জ","ফরিদপুর","গোপালগঞ্জ","মাদারীপুর","রাজবাড়ী","শরীয়তপুর"],
+  "চট্টগ্রাম": ["চট্টগ্রাম","কক্সবাজার","বান্দরবান","রাঙামাটি","খাগড়াছড়ি","ফেনী","নোয়াখালী","লক্ষ্মীপুর","চাঁদপুর","কুমিল্লা","ব্রাহ্মণবাড়িয়া"],
+  "রাজশাহী": ["রাজশাহী","চাঁপাইনবাবগঞ্জ","নাটোর","নওগাঁ","পাবনা","সিরাজগঞ্জ","বগুড়া","জয়পুরহাট"],
+  "খুলনা": ["খুলনা","বাগেরহাট","সাতক্ষীরা","যশোর","ঝিনাইদহ","মাগুরা","নড়াইল","কুষ্টিয়া","চুয়াডাঙ্গা","মেহেরপুর"],
+  "বরিশাল": ["বরিশাল","ভোলা","পটুয়াখালী","পিরোজপুর","বরগুনা","ঝালকাঠি"],
+  "সিলেট": ["সিলেট","মৌলভীবাজার","হবিগঞ্জ","সুনামগঞ্জ"],
+  "রংপুর": ["রংপুর","দিনাজপুর","গাইবান্ধা","কুড়িগ্রাম","লালমনিরহাট","নীলফামারী","ঠাকুরগাঁও","পঞ্চগড়"],
+  "ময়মনসিংহ": ["ময়মনসিংহ","জামালপুর","শেরপুর","নেত্রকোনা"]
+};
+
+function populateDivisionSelect() {
+  const sel = document.getElementById('custDivision');
+  if (!sel || sel.options.length > 1) return;
+  Object.keys(BD_DIVISIONS).forEach(div => {
+    const opt = document.createElement('option');
+    opt.value = div; opt.textContent = div;
+    sel.appendChild(opt);
+  });
+}
+
+function onDivisionChange() {
+  const division = document.getElementById('custDivision').value;
+  const distSel = document.getElementById('custDistrict');
+  distSel.innerHTML = '<option value="">জেলা নির্বাচন করুন</option>';
+  (BD_DIVISIONS[division] || []).forEach(dist => {
+    const opt = document.createElement('option');
+    opt.value = dist; opt.textContent = dist;
+    distSel.appendChild(opt);
+  });
+}
+function onDistrictChange() { /* এলাকা/থানা ইউজার নিজে লিখবেন */ }
+
+function openCheckout() {
+  if (cart.length === 0) { showToast('❌ কার্ট খালি!'); return; }
+  closeCart();
+  selectedDelivery = 'dhaka';
+  document.getElementById('delivDhaka').classList.add('selected');
+  document.getElementById('delivOutside').classList.remove('selected');
+  populateDivisionSelect();
+  renderOrderSummary();
+  document.getElementById('orderModal').classList.add('open');
+  autofillCheckoutFromProfile();
+}
+function selectDelivery(type) {
+  selectedDelivery = type;
+  document.getElementById('delivDhaka').classList.toggle('selected', type === 'dhaka');
+  document.getElementById('delivOutside').classList.toggle('selected', type === 'outside');
+  renderOrderSummary();
+}
+function closeCheckout() { document.getElementById('orderModal').classList.remove('open'); }
+
+function selectPayment(type) {
+  selectedPayment = type;
+  document.getElementById('payBkash').classList.toggle('selected', type === 'bkash');
+  document.getElementById('payCod').classList.toggle('selected', type === 'cod');
+  document.getElementById('bkashInfo').classList.toggle('show', type === 'bkash');
+}
+
+// ================= পেমেন্ট গেটওয়ে সিমুলেশন (bKash/Nagad - ম্যানুয়াল সেন্ডমানি) =================
+// ⚠️ দুটি পদ্ধতির জন্য একই পার্সোনাল নম্বর ব্যবহার করা হচ্ছে। আলাদা নম্বর দিতে চাইলে এখানে বদলে দিন।
+const PGW_NUMBERS = { bkash: '01796716499', nagad: '01796716499' };
+const PGW_LABELS = {
+  bkash:  { app: 'bKash',  short: 'bK', color: '#E2136E', bg: '#FFF0F5' },
+  nagad:  { app: 'Nagad',  short: 'নগ', color: '#F6871F', bg: '#FFF6EC' }
+};
+
+function getGrandTotal() {
+  const subtotal = cart.reduce((s,c) => s + parseInt(c.price.replace(/[^\d]/g,''))*c.qty, 0);
+  return subtotal + DELIVERY_CHARGE[selectedDelivery];
+}
+
+function openPaymentGateway() {
+  document.getElementById('pgwOverlay').classList.add('open');
+  document.getElementById('pgwStep1').style.display = 'block';
+  document.getElementById('pgwStep2').style.display = 'none';
+  document.getElementById('pgwStep3').style.display = 'none';
+  document.getElementById('pgwPayFooter').textContent = 'Pay ৳' + getGrandTotal().toLocaleString();
+  setTimeout(() => {
+    document.getElementById('pgwStep1').style.display = 'none';
+    document.getElementById('pgwStep2').style.display = 'block';
+  }, 1400);
+}
+
+function closePaymentGateway() {
+  document.getElementById('pgwOverlay').classList.remove('open');
+}
+
+function selectGatewayMethod(method) {
+  const info = PGW_LABELS[method];
+  const number = PGW_NUMBERS[method];
+  const total = getGrandTotal();
+  const logo = document.getElementById('pgwMethodLogo');
+  logo.textContent = info.short;
+  logo.style.background = info.bg;
+  logo.style.color = info.color;
+  document.getElementById('pgwMethodName').textContent = info.app + ' Personal';
+  document.getElementById('pgwAmountBox').textContent = '৳ ' + total.toLocaleString();
+  document.getElementById('pgwNumber').textContent = number;
+  document.getElementById('pgwAmountText').textContent = total.toLocaleString();
+  document.getElementById('pgwAppName').textContent = info.app;
+  document.getElementById('pgwAppName2').textContent = info.app;
+  document.getElementById('pgwTxnInput').value = '';
+  document.getElementById('pgwStep2').style.display = 'none';
+  document.getElementById('pgwStep3').style.display = 'block';
+}
+
+function pgwCopy(elId) {
+  const text = document.getElementById(elId).textContent.trim();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('✅ কপি হয়েছে'))
+      .catch(() => showToast('❌ কপি করা যায়নি'));
+  }
+}
+
+function verifyGatewayPayment() {
+  const txnId = document.getElementById('pgwTxnInput').value.trim();
+  if (!txnId) { showToast('❌ Transaction ID দিন!'); return; }
+  document.getElementById('custTxnId').value = txnId;
+  closePaymentGateway();
+  placeOrder(); // TxnID পূরণ থাকায় এবার সরাসরি অর্ডার সাবমিট হবে
+}
+
+// 📲 TELEGRAM নোটিফিকেশন — bot token এখানে নেই, Google Apps Script (ফ্রি, কার্ড লাগে না)
+// ব্রিজ হিসেবে কাজ করে এবং token টা ওখানে (Script Properties এ) লুকানো থাকে।
+// নিচের URL টা তোমার Apps Script deploy করার পর পাওয়া "Web app URL" দিয়ে বদলাও।
+const TELEGRAM_BRIDGE_URL = 'https://script.google.com/macros/s/AKfycbys9ETxTkcy7Caa9AHB-HdDXih9eS94GnevdaObu2YaJAaOCTRYv6fPTybhjMk3tmD7sw/exec';
+
+function sendTelegramNotification(order) {
+  if (!TELEGRAM_BRIDGE_URL || TELEGRAM_BRIDGE_URL.startsWith('PASTE_')) return;
+  fetch(TELEGRAM_BRIDGE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' }, // Apps Script এ CORS প্রি-ফ্লাইট এড়াতে text/plain ব্যবহার করা হলো
+    body: JSON.stringify(order)
+  }).catch(err => console.error('Telegram নোটিফিকেশন পাঠাতে ব্যর্থ:', err));
+}
+
+function placeOrder() {
+  // 🕵️ HONEYPOT: সাধারণ ইউজার এই লুকানো ফিল্ডটা দেখতে/পূরণ করতে পারে না,
+  // শুধু বট/অটো-স্ক্রিপ্ট এটা পূরণ করে ফেলে। পূরণ থাকলে চুপচাপ অর্ডার বাতিল।
+  const honeypot = document.getElementById('custWebsite');
+  if (honeypot && honeypot.value.trim() !== '') { return; }
+
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const addressLine = document.getElementById('custAddress').value.trim();
+  const division = document.getElementById('custDivision').value.trim();
+  const district = document.getElementById('custDistrict').value.trim();
+  const thana = document.getElementById('custThana').value.trim();
+  const note = document.getElementById('custNote').value.trim();
+  const txnId = document.getElementById('custTxnId').value.trim();
+  if (!name || !phone || !addressLine) { showToast('❌ সব তথ্য পূরণ করুন!'); return; }
+  // 📱 ফোন নাম্বার ভ্যালিডেশন: সঠিক বাংলাদেশি ফরম্যাট (01XXXXXXXXX, ১১ ডিজিট) না হলে আটকানো হবে
+  const cleanPhone = phone.replace(/[\s-]/g, '');
+  if (!/^01[3-9]\d{8}$/.test(cleanPhone)) {
+    showToast('❌ সঠিক মোবাইল নাম্বার দিন (যেমন: 01712345678)!');
+    return;
+  }
+  if (name.length < 3 || /^(.)\1*$/.test(name.replace(/\s/g,''))) {
+    showToast('❌ সঠিক নাম লিখুন!');
+    return;
+  }
+  if (!division || !district || !thana) { showToast('❌ বিভাগ, জেলা ও এলাকা/থানা পূরণ করুন!'); return; }
+  if (!selectedPayment) { showToast('❌ পেমেন্ট পদ্ধতি বেছে নিন!'); return; }
+  // bKash/Nagad বাছা থাকলে কিন্তু এখনো TxnID পূরণ না হয়ে থাকলে — সরাসরি এরর না দিয়ে
+  // ধাপে ধাপে পেমেন্ট গেটওয়ে ওভারলে চালু করা হচ্ছে (Verify করলে এই ফাংশনটাই আবার কল হবে)
+  if (selectedPayment === 'bkash' && !txnId) { openPaymentGateway(); return; }
+  const address = `${addressLine}, থানা: ${thana}, জেলা: ${district}, বিভাগ: ${division}`;
+  const subtotal = cart.reduce((s,c) => s + parseInt(c.price.replace(/[^\d]/g,''))*c.qty, 0);
+  const deliveryCharge = DELIVERY_CHARGE[selectedDelivery];
+  const total = subtotal + deliveryCharge;
+  const order = {
+    id: 'GHB' + Date.now(),
+    name, phone: cleanPhone, address, division, district, thana, note,
+    txnId: selectedPayment === 'bkash' ? txnId : '',
+    payment: selectedPayment,
+    delivery: selectedDelivery,
+    deliveryCharge,
+    items: [...cart],
+    total,
+    status: 'pending',
+    time: new Date().toLocaleString('bn-BD'),
+    createdAt: Date.now(),
+    customerUid: currentCustomer ? currentCustomer.uid : null,
+    customerEmail: currentCustomer ? currentCustomer.email : null
+  };
+  const placeBtn = document.querySelector('.submit-order');
+  if (placeBtn) placeBtn.disabled = true;
+  db.collection('orders').add(order).then(() => {
+    // অর্ডার Firestore-এ সফলভাবে সেভ হয়ে গেছে — এখন থেকে যা হবে সেটা আর
+    // "সাবমিট ব্যর্থ" ধরা হবে না, কারণ ডেটা ইতিমধ্যে সেভ হয়ে গেছে।
+    cart = [];
+    updateCartUI();
+    closeCheckout();
+    document.getElementById('successModal').classList.add('open');
+    document.getElementById('successOrderId').textContent = '🆔 অর্ডার আইডি: ' + order.id + ' (ট্র্যাকিংয়ের জন্য এটি সংরক্ষণ করুন)';
+    document.getElementById('custName').value = '';
+    document.getElementById('custPhone').value = '';
+    document.getElementById('custAddress').value = '';
+    document.getElementById('custDivision').value = '';
+    document.getElementById('custDistrict').innerHTML = '<option value="">জেলা নির্বাচন করুন</option>';
+    document.getElementById('custThana').value = '';
+    document.getElementById('custNote').value = '';
+    document.getElementById('custTxnId').value = '';
+    selectedPayment = '';
+    selectedDelivery = 'dhaka';
+    document.getElementById('payBkash').classList.remove('selected');
+    document.getElementById('payCod').classList.remove('selected');
+    document.getElementById('bkashInfo').classList.remove('show');
+
+    // নোটিফিকেশন পাঠানো এখন একটা আলাদা try-catch-এ, যাতে Notification API
+    // (বিশেষ করে Android Chrome-এ) এরর দিলেও অর্ডার সাকসেস ফ্লো ভেঙে না যায়।
+    try { sendOrderNotification(order); } catch (e) { console.error('Browser notification failed:', e); }
+    try { sendTelegramNotification(order); } catch (e) { console.error('Telegram notification failed:', e); }
+  }).catch(() => {
+    showToast('❌ অর্ডার সাবমিট হয়নি, আবার চেষ্টা করুন!');
+  }).finally(() => {
+    if (placeBtn) placeBtn.disabled = false;
+  });
+}
+function closeSuccess() { document.getElementById('successModal').classList.remove('open'); }
+
+// ADMIN
+function openAdmin() { document.getElementById('adminPanel').classList.add('open'); }
+function closeAdmin() {
+  document.getElementById('adminPanel').classList.remove('open');
+  document.getElementById('adminDashboard').style.display = 'none';
+  document.getElementById('adminLoginBox').style.display = 'block';
+  document.getElementById('adminPass').value = '';
+  document.getElementById('loginError').textContent = '';
+  if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
+  if (isAdminSession) { isAdminSession = false; auth.signOut(); }
+}
+// এডমিন লগইন এখন Firebase Auth দিয়ে হয় — আসল পাসওয়ার্ড Firebase Auth এ সেভ থাকে,
+// কোডে কোথাও প্লেইনটেক্সট পাসওয়ার্ড নেই। ADMIN_EMAIL শুধু চেনার জন্য, এটা secret না।
+const ADMIN_EMAIL = 'admin@gadgethunterbd.com'; // DEPLOY_GUIDE.md অনুযায়ী Firebase Auth এ এই ইমেইলে অ্যাকাউন্ট বানাও
+let isAdminSession = false;
+
+function checkAdmin() {
+  const pass = document.getElementById('adminPass').value;
+  const errBox = document.getElementById('loginError');
+  const btn = document.querySelector('#adminLoginBox button');
+  errBox.textContent = '';
+  if (btn) btn.disabled = true;
+  auth.signInWithEmailAndPassword(ADMIN_EMAIL, pass)
+    .then(() => {
+      isAdminSession = true;
+      document.getElementById('adminLoginBox').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'block';
+      loadAdminData();
+    })
+    .catch(() => {
+      errBox.textContent = '❌ ভুল পাসওয়ার্ড!';
+    })
+    .finally(() => { if (btn) btn.disabled = false; });
+}
+let ordersUnsubscribe = null;
+function loadAdminData() {
+  updateNotifBanner();
+  const list = document.getElementById('adminOrdersList');
+  list.innerHTML = '<div class="no-orders">⏳ লোড হচ্ছে...</div>';
+  if (ordersUnsubscribe) ordersUnsubscribe();
+  ordersUnsubscribe = db.collection('orders').orderBy('createdAt', 'desc')
+    .onSnapshot(snapshot => {
+      orders = snapshot.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
+      renderAdminOrders();
+    }, () => {
+      list.innerHTML = '<div class="no-orders">❌ অর্ডার লোড করা যায়নি, ইন্টারনেট চেক করুন</div>';
+    });
+}
+function renderAdminOrders() {
+  const list = document.getElementById('adminOrdersList');
+  if (orders.length === 0) {
+    list.innerHTML = '<div class="no-orders">📭 কোনো অর্ডার নেই</div>';
+  } else {
+    list.innerHTML = orders.map(o => `
+    <div class="order-card">
+      <div class="order-top">
+        <span class="order-id">#${o.id}</span>
+        <span class="order-status ${o.status === 'confirmed' ? 'status-confirmed' : 'status-pending'}">${o.status === 'confirmed' ? '✅ কনফার্মড' : '⏳ পেন্ডিং'}</span>
+      </div>
+      <div class="order-customer">${o.name}</div>
+      <div class="order-phone">📞 ${o.phone}</div>
+      <div class="order-phone">📍 ${o.address}</div>
+      <div class="order-items-list">${o.items.map(c=>`${c.name} ×${c.qty}`).join(', ')}</div>
+      <div class="order-phone">💳 ${o.payment === 'bkash' ? 'bKash/Nagad' : 'ক্যাশ অন ডেলিভারি'}</div>
+      ${o.txnId ? `<div class="order-phone">🔖 TxnID: <strong>${o.txnId}</strong></div>` : ''}
+      ${o.delivery ? `<div class="order-phone">🚚 ${o.delivery === 'dhaka' ? 'ঢাকার ভিতরে' : 'ঢাকার বাইরে'} (৳${o.deliveryCharge})</div>` : ''}
+      ${o.note ? `<div class="order-phone">📝 ${o.note}</div>` : ''}
+      <div class="order-amount">৳ ${o.total.toLocaleString()}</div>
+      <div class="order-phone" style="font-size:11px;">${o.time}</div>
+      ${o.status !== 'confirmed' ? `<button class="confirm-order-btn" onclick="confirmOrder('${o.docId}')">✅ কনফার্ম করুন</button>` : ''}
+    </div>`).join('');
+  }
+  // stats
+  const pending = orders.filter(o => o.status === 'pending').length;
+  const confirmed = orders.filter(o => o.status === 'confirmed').length;
+  const revenue = orders.filter(o => o.status === 'confirmed').reduce((s,o) => s+o.total, 0);
+  document.getElementById('statTotal').textContent = orders.length;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statConfirmed').textContent = confirmed;
+  document.getElementById('statRevenue').textContent = '৳'+revenue.toLocaleString();
+}
+function confirmOrder(docId) {
+  db.collection('orders').doc(docId).update({ status: 'confirmed' }).then(() => {
+    showToast('✅ অর্ডার কনফার্ম হয়েছে!');
+  }).catch(() => {
+    showToast('❌ কনফার্ম করা যায়নি, আবার চেষ্টা করুন');
+  });
+}
+function showTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const tabs = ['orders','stats','addproduct','manageproduct','design','texteditor','banner'];
+  tabs.forEach(t => {
+    const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (el) el.style.display = (t === tab) ? 'block' : 'none';
+  });
+  if (tab === 'manageproduct') loadAdminProducts();
+}
+
+// 🎨 DESIGN
+function applyTheme(primary, dark) {
+  document.documentElement.style.setProperty('--primary', primary);
+  document.documentElement.style.setProperty('--dark', dark);
+  document.getElementById('colorPrimary').value = primary;
+  document.getElementById('colorDark').value = dark;
+  showToast('🎨 থিম পরিবর্তন হয়েছে!');
+}
+function applyCustomColors() {
+  const p = document.getElementById('colorPrimary').value;
+  const d = document.getElementById('colorDark').value;
+  document.documentElement.style.setProperty('--primary', p);
+  document.documentElement.style.setProperty('--dark', d);
+  showToast('✅ কাস্টম রঙ লাগানো হয়েছে!');
+}
+
+// 📝 TEXT
+function saveSiteSettings(partial) {
+  db.collection('siteData').doc('settings').set(partial, { merge: true })
+    .catch(e => console.error('সেটিংস সেভ করতে ব্যর্থ:', e));
+}
+function saveProductsToDB() {
+  // Firestore নেস্টেড অ্যারে (array এর ভিতরে array) সাপোর্ট করে না,
+  // তাই প্রতিটি প্রোডাক্টকে অবজেক্টে (map) রূপান্তর করে সেভ করা হচ্ছে।
+  const listForDB = PRODUCTS.map(p => ({
+    name: p[0], price: p[1], oldPrice: p[2], img: p[3],
+    features: p[4], discount: p[5], cat: p[6]
+  }));
+  db.collection('siteData').doc('products').set({ list: listForDB })
+    .then(() => console.log('প্রোডাক্ট সফলভাবে সেভ হয়েছে'))
+    .catch(e => { console.error('প্রোডাক্ট সেভ করতে ব্যর্থ:', e); showToast('❌ সেভ করতে সমস্যা হয়েছে!'); });
+}
+function loadSiteData() {
+  db.collection('siteData').doc('settings').get().then(doc => {
+    if (!doc.exists) return;
+    const s = doc.data();
+    if (s.shopName) {
+      document.querySelectorAll('.logo, .footer-logo').forEach(l => {
+        l.innerHTML = s.shopName.replace(/([A-Za-z]+)(\s*BD\s*$)/,'$1<span>$2</span>');
+      });
+      document.title = s.shopName;
+    }
+    if (s.hero1 && s.hero2) {
+      const heroH1 = document.querySelector('.hero h1');
+      if (heroH1) heroH1.innerHTML = s.hero1 + '<br><span>' + s.hero2 + '</span>';
+    }
+    if (s.heroSub) {
+      const heroP = document.querySelector('.hero p');
+      if (heroP) heroP.textContent = s.heroSub;
+    }
+    if (s.phone) {
+      document.querySelectorAll('a[href^="tel:"]').forEach(a => { a.href = 'tel:' + s.phone; a.textContent = s.phone; });
+      const wa = document.querySelector('.wa-btn');
+      if (wa) wa.href = 'https://wa.me/88' + s.phone + '?text=আমি%20অর্ডার%20করতে%20চাই';
+    }
+    if (s.footer) {
+      const footerP = document.querySelector('footer p');
+      if (footerP) footerP.textContent = s.footer;
+    }
+    if (s.logoUrl) {
+      document.querySelectorAll('.logo, .footer-logo').forEach(l => {
+        if (!l.querySelector('img')) l.innerHTML = `<img src="${s.logoUrl}" style="height:32px;width:auto;vertical-align:middle;border-radius:6px;margin-right:6px;">${l.textContent}`;
+      });
+    }
+    if (s.heroGradient) {
+      document.querySelector('.hero').style.background = s.heroGradient;
+    }
+    if (s.bannerUrl) {
+      document.querySelector('.hero').style.backgroundImage = `url('${s.bannerUrl}')`;
+      document.querySelector('.hero').style.backgroundSize = 'cover';
+      document.querySelector('.hero').style.backgroundPosition = 'center';
+    }
+  }).catch(e => console.error('সেটিংস লোড করতে ব্যর্থ:', e));
+
+  db.collection('siteData').doc('products').get().then(doc => {
+    if (!doc.exists) return;
+    const list = doc.data().list;
+    if (Array.isArray(list) && list.length) {
+      // পুরনো ডেটা (নেস্টেড অ্যারে আকারে) এবং নতুন ডেটা (অবজেক্ট আকারে) দুটোই সাপোর্ট করার জন্য
+      const arr = list.map(item => Array.isArray(item)
+        ? item
+        : [item.name, item.price, item.oldPrice, item.img, item.features, item.discount, item.cat]
+      );
+      PRODUCTS.splice(0, PRODUCTS.length, ...arr);
+      currentProducts = [...PRODUCTS];
+      renderProducts(currentProducts);
+      renderTopSelling();
+    }
+  }).catch(e => console.error('প্রোডাক্ট লোড করতে ব্যর্থ:', e));
+}
+
+function applyTextChanges() {
+  const shopName = document.getElementById('txtShopName').value.trim();
+  const hero1 = document.getElementById('txtHero1').value.trim();
+  const hero2 = document.getElementById('txtHero2').value.trim();
+  const heroSub = document.getElementById('txtHeroSub').value.trim();
+  const phone = document.getElementById('txtPhone').value.trim();
+  const footer = document.getElementById('txtFooter').value.trim();
+  if (shopName) {
+    const logos = document.querySelectorAll('.logo, .footer-logo');
+    logos.forEach(l => { l.innerHTML = shopName.replace(/([A-Za-z]+)(\s*BD\s*$)/,'$1<span>$2</span>'); });
+    document.title = shopName;
+  }
+  const heroH1 = document.querySelector('.hero h1');
+  if (heroH1 && hero1 && hero2) heroH1.innerHTML = hero1 + '<br><span>' + hero2 + '</span>';
+  const heroP = document.querySelector('.hero p');
+  if (heroP && heroSub) heroP.textContent = heroSub;
+  if (phone) {
+    document.querySelectorAll('a[href^="tel:"]').forEach(a => {
+      a.href = 'tel:' + phone; a.textContent = phone;
+    });
+    const wa = document.querySelector('.wa-btn');
+    if (wa) wa.href = 'https://wa.me/88' + phone + '?text=আমি%20অর্ডার%20করতে%20চাই';
+  }
+  const footerP = document.querySelector('footer p');
+  if (footerP && footer) footerP.textContent = footer;
+  saveSiteSettings({
+    ...(shopName ? { shopName } : {}),
+    ...(hero1 && hero2 ? { hero1, hero2 } : {}),
+    ...(heroSub ? { heroSub } : {}),
+    ...(phone ? { phone } : {}),
+    ...(footer ? { footer } : {})
+  });
+  showToast('✅ লেখা আপডেট হয়েছে!');
+}
+
+// 🖼️ BANNER & LOGO
+function applyBanner() {
+  const url = document.getElementById('bannerUrl').value.trim();
+  if (!url) { showToast('❌ URL দিন!'); return; }
+  document.querySelector('.hero').style.backgroundImage = `url('${url}')`;
+  document.querySelector('.hero').style.backgroundSize = 'cover';
+  document.querySelector('.hero').style.backgroundPosition = 'center';
+  saveSiteSettings({ bannerUrl: url });
+  showToast('✅ ব্যানার লাগানো হয়েছে!');
+}
+function removeBanner() {
+  document.querySelector('.hero').style.backgroundImage = '';
+  saveSiteSettings({ bannerUrl: '' });
+  showToast('🗑️ ব্যানার সরানো হয়েছে');
+}
+function applyLogo() {
+  const url = document.getElementById('logoUrl').value.trim();
+  if (!url) { showToast('❌ URL দিন!'); return; }
+  document.querySelectorAll('.logo, .footer-logo').forEach(l => {
+    l.innerHTML = `<img src="${url}" style="height:32px;width:auto;vertical-align:middle;border-radius:6px;margin-right:6px;">${l.textContent}`;
+  });
+  saveSiteSettings({ logoUrl: url });
+  showToast('✅ লোগো লাগানো হয়েছে!');
+}
+function removeLogo() {
+  document.querySelectorAll('.logo img, .footer-logo img').forEach(img => img.remove());
+  saveSiteSettings({ logoUrl: '' });
+  showToast('🗑️ লোগো সরানো হয়েছে');
+}
+function applyHeroGradient(gradient) {
+  document.querySelector('.hero').style.background = gradient;
+  saveSiteSettings({ heroGradient: gradient });
+  showToast('🎨 Hero রঙ পরিবর্তন হয়েছে!');
+}
+
+function addNewProduct() {
+  const name = document.getElementById('newName').value.trim();
+  const price = document.getElementById('newPrice').value.trim();
+  const oldPrice = document.getElementById('newOldPrice').value.trim();
+  const img = document.getElementById('newImg').value.trim();
+  const featuresRaw = document.getElementById('newFeatures').value.trim();
+  const discount = document.getElementById('newDiscount').value.trim() || 'NEW';
+  const cat = document.getElementById('newCat').value;
+  if (!name || !price || !oldPrice || !img || !cat) { showToast('❌ সব তারকা (*) ফিল্ড পূরণ করুন!'); return; }
+  const features = featuresRaw.split('\n').filter(f => f.trim()).map(f => f.trim()).join('<br>');
+  PRODUCTS.push([name, price, oldPrice, img, features, discount, cat]);
+  renderProducts(PRODUCTS);
+  renderTopSelling();
+  saveProductsToDB();
+  document.getElementById('newName').value = '';
+  document.getElementById('newPrice').value = '';
+  document.getElementById('newOldPrice').value = '';
+  document.getElementById('newImg').value = '';
+  document.getElementById('newFeatures').value = '';
+  document.getElementById('newDiscount').value = '';
+  document.getElementById('newCat').value = '';
+  showToast('✅ নতুন প্রোডাক্ট যোগ হয়েছে!');
+}
+
+function loadAdminProducts() {
+  const list = document.getElementById('adminProductList');
+  list.innerHTML = PRODUCTS.map((p, i) => `
+    <div class="admin-product-item">
+      <img src="${p[3]}" onerror="this.src='https://via.placeholder.com/50'" alt="${p[0]}">
+      <div class="admin-product-item-info">
+        <div class="admin-product-item-name">${p[0]}</div>
+        <div class="admin-product-item-price">${p[1]} <span style="text-decoration:line-through;color:#999;font-size:11px;">${p[2]}</span></div>
+      </div>
+      <div>
+        <button class="edit-product-btn" onclick="openEditModal(${i})">✏️ এডিট</button>
+        <button class="del-product-btn" onclick="deleteProduct(${i})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openEditModal(idx) {
+  const p = PRODUCTS[idx];
+  document.getElementById('editIdx').value = idx;
+  document.getElementById('editName').value = p[0];
+  document.getElementById('editPrice').value = p[1];
+  document.getElementById('editOldPrice').value = p[2];
+  document.getElementById('editImg').value = p[3];
+  document.getElementById('editFeatures').value = p[4].replace(/<br>/g, '\n');
+  document.getElementById('editDiscount').value = p[5];
+  document.getElementById('editCat').value = p[6];
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeEditModal() { document.getElementById('editModal').classList.remove('open'); }
+
+function saveProductEdit() {
+  const idx = parseInt(document.getElementById('editIdx').value);
+  const featuresRaw = document.getElementById('editFeatures').value.trim();
+  const features = featuresRaw.split('\n').filter(f => f.trim()).map(f => f.trim()).join('<br>');
+  PRODUCTS[idx] = [
+    document.getElementById('editName').value.trim(),
+    document.getElementById('editPrice').value.trim(),
+    document.getElementById('editOldPrice').value.trim(),
+    document.getElementById('editImg').value.trim(),
+    features,
+    document.getElementById('editDiscount').value.trim(),
+    document.getElementById('editCat').value.trim()
+  ];
+  closeEditModal();
+  renderProducts(PRODUCTS);
+  renderTopSelling();
+  loadAdminProducts();
+  saveProductsToDB();
+  showToast('✅ প্রোডাক্ট আপডেট হয়েছে!');
+}
+
+function deleteProduct(idx) {
+  if (!confirm(`"${PRODUCTS[idx][0]}" ডিলিট করবেন?`)) return;
+  PRODUCTS.splice(idx, 1);
+  renderProducts(PRODUCTS);
+  renderTopSelling();
+  loadAdminProducts();
+  saveProductsToDB();
+  showToast('🗑️ প্রোডাক্ট ডিলিট হয়েছে');
+}
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// 🔔 PUSH NOTIFICATION SETUP
+function updateNotifBanner() {
+  const banner = document.getElementById('notifBanner');
+  if (!banner) return;
+  if (!('Notification' in window)) {
+    banner.innerHTML = '<span style="font-size:13px;color:#666;">⚠️ এই ব্রাউজারে নোটিফিকেশন সাপোর্ট নেই</span>';
+  } else if (Notification.permission === 'granted') {
+    banner.style.background = '#D1FAE5';
+    banner.style.borderColor = '#10B981';
+    banner.innerHTML = '<span style="font-size:13px;font-weight:600;color:#065F46;">✅ নোটিফিকেশন চালু আছে — নতুন অর্ডার আসলে জানাবে</span>';
+  } else if (Notification.permission === 'denied') {
+    banner.style.background = '#FEE2E2';
+    banner.style.borderColor = '#EF4444';
+    banner.innerHTML = '<span style="font-size:13px;font-weight:600;color:#7F1D1D;">❌ নোটিফিকেশন ব্লক করা আছে। ব্রাউজার সেটিং থেকে Allow করুন।</span>';
+  }
+}
+
+function enableNotifications() {
+  if (!('Notification' in window)) { showToast('❌ এই ব্রাউজারে সাপোর্ট নেই'); return; }
+  Notification.requestPermission().then(perm => {
+    updateNotifBanner();
+    if (perm === 'granted') {
+      showToast('✅ নোটিফিকেশন চালু হয়েছে!');
+      new Notification('🎉 Gadget Hunter BD', { body: 'নোটিফিকেশন চালু হয়েছে! নতুন অর্ডার আসলে এখানে দেখাবে।', icon: 'https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/Untitled%20design_20260722_003541_0000.png' });
+    } else {
+      showToast('❌ নোটিফিকেশন Allow করা হয়নি');
+    }
+  });
+}
+
+function requestNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    // সাইলেন্টলি রেডি, ক্লিক ছাড়া পারমিশন চাওয়া যায় না
+  }
+}
+
+function sendOrderNotification(order) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') {
+    Notification.requestPermission().then(perm => {
+      if (perm === 'granted') _fireNotification(order);
+    });
+    return;
+  }
+  _fireNotification(order);
+}
+
+function _fireNotification(order) {
+  try {
+    const itemList = order.items.map(c => `${c.name} ×${c.qty}`).join(', ');
+    const payMethod = order.payment === 'bkash' ? 'bKash/Nagad' : 'ক্যাশ অন ডেলিভারি';
+    const delivArea = order.delivery === 'dhaka' ? 'ঢাকার ভিতরে' : 'ঢাকার বাইরে';
+    const notif = new Notification('🛒 নতুন অর্ডার! #' + order.id, {
+      body: `👤 ${order.name}\n📞 ${order.phone}\n📦 ${itemList}\n💰 ৳${order.total} | ${payMethod}${order.txnId ? ' (TxnID: ' + order.txnId + ')' : ''}\n🚚 ${delivArea}`,
+      icon: 'https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/Untitled%20design_20260722_003541_0000.png',
+      badge: 'https://6a632a1e6ba67c0bc5fe7981.imgix.net/sandbox/Untitled%20design_20260722_003541_0000.png',
+      tag: order.id,
+      requireInteraction: true
+    });
+    notif.onclick = () => {
+      window.focus();
+      openAdmin();
+      notif.close();
+    };
+  } catch (e) {
+    // Android Chrome-এর মতো কিছু ব্রাউজারে সরাসরি "new Notification()" কল করলে
+    // এরর দেয় (সেখানে শুধু Service Worker থেকে নোটিফিকেশন দেখানো যায়)।
+    // এই এরর যাতে অর্ডার সাকসেস ফ্লো ভেঙে না দেয়, তাই এখানে ধরে নেওয়া হলো।
+    console.error('Notification display failed:', e);
+  }
+}
+
+// ================= CUSTOMER LOGIN / LOGOUT =================
+let currentCustomer = null;      // Firebase auth user object
+let currentCustomerProfile = null; // { name, phone } from Firestore
+
+function handleCustomerAuthClick() {
+  toggleCustomerDropdown();
+}
+
+function toggleCustomerDropdown() {
+  document.getElementById('customerDropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('customerAuthWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('customerDropdown').classList.remove('open');
+  }
+});
+
+function openCustomerAuthModal() {
+  document.getElementById('customerDropdown').classList.remove('open');
+  switchAuthTab('login');
+  document.getElementById('loginAuthError').textContent = '';
+  document.getElementById('signupAuthError').textContent = '';
+  document.getElementById('customerAuthModal').classList.add('open');
+}
+function closeCustomerAuthModal() {
+  document.getElementById('customerAuthModal').classList.remove('open');
+}
+function switchAuthTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('authTabLoginBtn').classList.toggle('active', isLogin);
+  document.getElementById('authTabSignupBtn').classList.toggle('active', !isLogin);
+  document.getElementById('authLoginForm').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('authSignupForm').style.display = isLogin ? 'none' : 'block';
+}
+
+function friendlyAuthError(code) {
+  const map = {
+    'auth/invalid-email': 'ইমেইল সঠিক নয়!',
+    'auth/user-not-found': 'এই ইমেইলে কোনো একাউন্ট নেই!',
+    'auth/wrong-password': 'ভুল পাসওয়ার্ড!',
+    'auth/invalid-credential': 'ইমেইল বা পাসওয়ার্ড ভুল!',
+    'auth/email-already-in-use': 'এই ইমেইলে আগে থেকে একাউন্ট আছে!',
+    'auth/weak-password': 'পাসওয়ার্ড কমপক্ষে ৬ ক্যারেক্টার দিন!',
+    'auth/missing-password': 'পাসওয়ার্ড দিন!'
+  };
+  return map[code] || 'কিছু একটা সমস্যা হয়েছে, আবার চেষ্টা করুন!';
+}
+
+function customerLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errBox = document.getElementById('loginAuthError');
+  const btn = document.getElementById('loginSubmitBtn');
+  errBox.textContent = '';
+  if (!email || !password) { errBox.textContent = 'ইমেইল ও পাসওয়ার্ড দিন!'; return; }
+  if (btn) btn.disabled = true;
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      closeCustomerAuthModal();
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+      showToast('✅ লগইন সফল হয়েছে!');
+    })
+    .catch(err => { errBox.textContent = friendlyAuthError(err.code); })
+    .finally(() => { if (btn) btn.disabled = false; });
+}
+
+function customerSignup() {
+  const name = document.getElementById('signupName').value.trim();
+  const phone = document.getElementById('signupPhone').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const errBox = document.getElementById('signupAuthError');
+  const btn = document.getElementById('signupSubmitBtn');
+  errBox.textContent = '';
+  if (!name || !email || !password) { errBox.textContent = 'তারকা (*) চিহ্নিত ফিল্ড পূরণ করুন!'; return; }
+  if (btn) btn.disabled = true;
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(cred => {
+      // একাউন্ট তৈরি হয়ে গেছে — এখান থেকে আর "ব্যর্থ" ধরা হবে না।
+      // নাম Firebase Auth প্রোফাইলে সরাসরি সেভ (Firestore এর উপর নির্ভর করে না)।
+      cred.user.updateProfile({ displayName: name }).catch(e => console.error('updateProfile failed:', e));
+      // ফোন নম্বর লোকালি সেভ রাখা হলো (checkout autofill এর জন্য)
+      if (phone) { try { localStorage.setItem('ghb_phone_' + cred.user.uid, phone); } catch (e) {} }
+      // Firestore এ প্রোফাইল সেভ করার চেষ্টা — এটা ব্যর্থ হলেও সাইনআপ সফলই থাকবে
+      db.collection('customers').doc(cred.user.uid).set({
+        name, phone, email, createdAt: Date.now()
+      }).catch(e => console.error('Firestore profile save failed (non-fatal):', e));
+
+      closeCustomerAuthModal();
+      document.getElementById('signupName').value = '';
+      document.getElementById('signupPhone').value = '';
+      document.getElementById('signupEmail').value = '';
+      document.getElementById('signupPassword').value = '';
+      showToast('🎉 একাউন্ট তৈরি হয়েছে, স্বাগতম!');
+    })
+    .catch(err => { errBox.textContent = friendlyAuthError(err.code); })
+    .finally(() => { if (btn) btn.disabled = false; });
+}
+
+function customerLogout() {
+  auth.signOut().then(() => {
+    document.getElementById('customerDropdown').classList.remove('open');
+    showToast('👋 লগআউট হয়েছেন');
+  });
+}
+
+function updateCustomerAuthUI() {
+  const btn = document.getElementById('customerAuthBtn');
+  const nameBox = document.getElementById('customerDropdownName');
+  const myOrdersBtn = document.getElementById('dropdownMyOrdersBtn');
+  const loginBtn = document.getElementById('dropdownLoginBtn');
+  const logoutBtn = document.getElementById('dropdownLogoutBtn');
+  if (currentCustomer) {
+    const label = currentCustomer.displayName || (currentCustomerProfile && currentCustomerProfile.name) || currentCustomer.email;
+    btn.textContent = '👤 ' + label;
+    nameBox.textContent = label;
+    myOrdersBtn.style.display = 'block';
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'block';
+  } else {
+    btn.textContent = '👤 মেনু';
+    nameBox.textContent = '';
+    myOrdersBtn.style.display = 'none';
+    loginBtn.style.display = 'block';
+    logoutBtn.style.display = 'none';
+  }
+}
+
+function openMyOrders() {
+  document.getElementById('customerDropdown').classList.remove('open');
+  document.getElementById('myOrdersModal').classList.add('open');
+  const body = document.getElementById('myOrdersBody');
+  if (!currentCustomer) { body.innerHTML = '<p style="font-size:13px;color:#999;">লগইন করুন আগে।</p>'; return; }
+  body.innerHTML = '<p style="font-size:13px;color:#999;">লোড হচ্ছে...</p>';
+  // এখানে ইচ্ছাকৃতভাবে orderBy ব্যবহার করা হয়নি — where + orderBy একসাথে
+  // ভিন্ন ফিল্ডে ব্যবহার করলে Firestore এ আলাদা composite index লাগে, যেটা
+  // কনসোল থেকে বানাতে হয়। তাই ডেটা এনে জাভাস্ক্রিপ্টে সর্ট করা হচ্ছে।
+  db.collection('orders').where('customerUid', '==', currentCustomer.uid)
+    .limit(30).get()
+    .then(snap => {
+      if (snap.empty) { body.innerHTML = '<p style="font-size:13px;color:#999;">এখনো কোনো অর্ডার নেই।</p>'; return; }
+      const docs = snap.docs.slice().sort((a, b) => (b.data().createdAt || 0) - (a.data().createdAt || 0));
+      body.innerHTML = docs.map(doc => {
+        const o = doc.data();
+        const itemList = (o.items || []).map(c => `${c.name} ×${c.qty}`).join(', ');
+        return `<div class="my-order-item">
+          <div class="mo-id">#${o.id || doc.id}</div>
+          <div>${itemList}</div>
+          <div style="margin:6px 0;font-weight:700;">৳ ${(o.total || 0).toLocaleString()}</div>
+          <span class="mo-status">${o.status || 'pending'}</span>
+          <div style="color:#999;font-size:11px;margin-top:4px;">${o.time || ''}</div>
+        </div>`;
+      }).join('');
+    })
+    .catch(err => {
+      console.error('My orders load failed:', err);
+      body.innerHTML = '<p style="font-size:13px;color:#999;">অর্ডার লোড করতে সমস্যা হয়েছে।</p>';
+    });
+}
+function closeMyOrders() { document.getElementById('myOrdersModal').classList.remove('open'); }
+
+// ================= অর্ডার ট্র্যাকিং (লগইন ছাড়াই মোবাইল নাম্বার / অর্ডার আইডি দিয়ে) =================
+function openTrackOrder() {
+  document.getElementById('customerDropdown').classList.remove('open');
+  document.getElementById('trackInput').value = '';
+  document.getElementById('trackResultBody').innerHTML = '';
+  document.getElementById('trackOrderModal').classList.add('open');
+}
+function closeTrackOrder() { document.getElementById('trackOrderModal').classList.remove('open'); }
+
+function renderTrackResults(docs, body) {
+  if (!docs.length) { body.innerHTML = '<p style="font-size:13px;color:#999;">কোনো অর্ডার পাওয়া যায়নি। সঠিক নাম্বার/আইডি দিয়ে আবার চেষ্টা করুন।</p>'; return; }
+  const sorted = docs.slice().sort((a, b) => (b.data().createdAt || 0) - (a.data().createdAt || 0));
+  body.innerHTML = sorted.map(doc => {
+    const o = doc.data();
+    const itemList = (o.items || []).map(c => `${c.name} ×${c.qty}`).join(', ');
+    return `<div class="my-order-item">
+      <div class="mo-id">#${o.id || doc.id}</div>
+      <div>${itemList}</div>
+      <div style="margin:6px 0;font-weight:700;">৳ ${(o.total || 0).toLocaleString()}</div>
+      <span class="mo-status">${o.status || 'pending'}</span>
+      <div style="color:#999;font-size:11px;margin-top:4px;">${o.time || ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function searchTrackOrder() {
+  const raw = document.getElementById('trackInput').value.trim();
+  const body = document.getElementById('trackResultBody');
+  if (!raw) { showToast('❌ মোবাইল নাম্বার বা অর্ডার আইডি দিন!'); return; }
+  body.innerHTML = '<p style="font-size:13px;color:#999;">খোঁজা হচ্ছে...</p>';
+  const cleanPhone = raw.replace(/[\s-]/g, '');
+  const isPhone = /^01[3-9]\d{8}$/.test(cleanPhone);
+  // ফোন নাম্বার দিয়ে দিলে 'phone' ফিল্ডে খোঁজা হবে, নাহলে 'id' ফিল্ডে (অর্ডার আইডি) খোঁজা হবে
+  const query = isPhone
+    ? db.collection('orders').where('phone', '==', cleanPhone).limit(30)
+    : db.collection('orders').where('id', '==', raw).limit(1);
+  query.get()
+    .then(snap => renderTrackResults(snap.docs, body))
+    .catch(err => {
+      console.error('Track order search failed:', err);
+      body.innerHTML = '<p style="font-size:13px;color:#999;">খুঁজতে সমস্যা হয়েছে, আবার চেষ্টা করুন।</p>';
+    });
+}
+
+// Autofill checkout form with logged-in customer's saved info
+function autofillCheckoutFromProfile() {
+  if (!currentCustomer) return;
+  const nameEl = document.getElementById('custName');
+  const phoneEl = document.getElementById('custPhone');
+  const savedPhone = (currentCustomerProfile && currentCustomerProfile.phone) ||
+    (function() { try { return localStorage.getItem('ghb_phone_' + currentCustomer.uid) || ''; } catch (e) { return ''; } })();
+  if (nameEl && !nameEl.value) nameEl.value = currentCustomer.displayName || (currentCustomerProfile && currentCustomerProfile.name) || '';
+  if (phoneEl && !phoneEl.value) phoneEl.value = savedPhone;
+}
+
+auth.onAuthStateChanged(user => {
+  if (user && user.email === ADMIN_EMAIL) {
+    // এডমিন অ্যাকাউন্ট — এটাকে সাধারণ কাস্টমার হিসেবে ধরা হবে না
+    currentCustomer = null;
+    currentCustomerProfile = null;
+    updateCustomerAuthUI();
+    return;
+  }
+  currentCustomer = user;
+  currentCustomerProfile = null;
+  // UI সাথে সাথে আপডেট হবে — Firestore এর উপর নির্ভর করে না, তাই Firestore
+  // এ কোনো সমস্যা হলেও লগইন/লগআউট অবস্থা সবসময় ঠিকভাবে দেখাবে।
+  updateCustomerAuthUI();
+  if (user) {
+    autofillCheckoutFromProfile();
+    // Firestore থেকে বাড়তি প্রোফাইল তথ্য (ঐচ্ছিক, ব্যর্থ হলেও সমস্যা নেই)
+    db.collection('customers').doc(user.uid).get()
+      .then(doc => {
+        currentCustomerProfile = doc.exists ? doc.data() : null;
+        updateCustomerAuthUI();
+        autofillCheckoutFromProfile();
+      })
+      .catch(e => console.error('Customer profile fetch failed (non-fatal):', e));
+  }
+});
+
+// INIT
+renderProducts(PRODUCTS);
+renderTopSelling();
+resetHeroAutoSlide();
+requestNotificationPermission();
+loadSiteData();
+
+// রাইট ক্লিক (context menu) ব্লক করা হলো
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
+</script>
+</body>
+</html>
